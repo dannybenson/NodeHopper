@@ -10,6 +10,7 @@ require 'JSON'
 json = JSON.parse(File.read('db/cj.json'))
 json.merge(JSON.parse(File.read('db/kl.json')))
 json.merge(JSON.parse(File.read('db/ka.json')))
+json.merge(JSON.parse(File.read('db/db.json')))
 
 friends = json['friends']['data']
 user_movies = {}
