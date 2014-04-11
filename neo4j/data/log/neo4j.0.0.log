@@ -1,0 +1,34 @@
+Apr 10, 2014 8:16:46 PM org.neo4j.server.logging.Logger log
+INFO: Setting startup timeout to: 120000ms based on -1
+Apr 10, 2014 8:16:49 PM org.neo4j.server.logging.Logger log
+INFO: Successfully started database
+Apr 10, 2014 8:16:50 PM org.neo4j.server.logging.Logger log
+INFO: Starting HTTP on port :7474 with 40 threads available
+Apr 10, 2014 8:16:50 PM org.neo4j.server.logging.Logger log
+INFO: Enabling HTTPS on port :7473
+Apr 10, 2014 8:16:50 PM org.neo4j.server.logging.Logger log
+INFO: No SSL certificate found, generating a self-signed certificate..
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounted discovery module at [/]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounted REST API at [/db/data/]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounted management API at [/db/manage/]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounted webadmin at [/webadmin]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounted Neo4j Browser at [/browser]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounting static content at [/webadmin] from [webadmin-html]
+Apr 10, 2014 8:16:51 PM org.neo4j.server.logging.Logger log
+INFO: Mounting static content at [/browser] from [browser]
+Apr 10, 2014 8:16:51 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+INFO: Initiating Jersey application, version 'Jersey: 1.9 09/02/2011 11:17 AM'
+Apr 10, 2014 8:16:52 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+INFO: Initiating Jersey application, version 'Jersey: 1.9 09/02/2011 11:17 AM'
+Apr 10, 2014 8:16:52 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+INFO: Initiating Jersey application, version 'Jersey: 1.9 09/02/2011 11:17 AM'
+Apr 10, 2014 8:16:53 PM org.neo4j.server.logging.Logger log
+INFO: Remote interface ready and available at [http://localhost:7474/]
+Apr 10, 2014 8:26:18 PM org.neo4j.server.logging.Logger log
+INFO: Neo4j Server shutdown initiated by request

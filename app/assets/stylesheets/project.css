@@ -1,0 +1,13 @@
+body {
+  background-color: #F0F0F0;
+}
+
+.header {
+  float: left;
+  font-size: 2em;
+  margin: 30px;
+  margin-top: 70px;
+  width: 150px;
+  height: 600px;
+  background-color: #5CCEEE;
+}
