@@ -7,7 +7,11 @@ body {
   font-size: 2em;
   margin: 30px;
   margin-top: 70px;
-  width: 150px;
+  width: 200px;
   height: 600px;
   background-color: #5CCEEE;
+}
+
+text {
+  font-size: 20px;
 }
