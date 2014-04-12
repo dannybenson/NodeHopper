@@ -26,11 +26,17 @@ friends.each do |friend|
     user_tv[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Tv show'}
   end
 end
-
 user_book = {}
 friends.each do |friend|
   if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Book'} != []
     user_book[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Book'}
+  end
+end
+
+user_nonprofit = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'} != []
+    user_nonprofit[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'}
   end
 end
 
@@ -85,7 +91,6 @@ user_tv.each do |k,v|
       @neo.create_relationship("like", user, m)
   end
 end
-
 user_book.each do |k,v|
   if user = @neo.find_nodes_labeled('Person', {:user_id => k}).first
     "whatever"
@@ -103,8 +108,27 @@ user_book.each do |k,v|
       @neo.create_relationship("like", user, m)
   end
 end
+user_nonprofit.each do |k,v|
+  if user = @neo.find_nodes_labeled('Person', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "Person")
+  end
+  v.each do |np|
+    if m = @neo.find_nodes_labeled('Non-profit', {:name => np["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => np['name'])
+      @neo.set_label(m, ["Interest", "Non-profit"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+
 @neo.create_schema_index("Interest", ['name'])
 @neo.create_schema_index("Movie", ['name'])
 @neo.create_schema_index("Music", ['name'])
 @neo.create_schema_index("Tv", ['name'])
 @neo.create_schema_index("Book", ['name'])
+@neo.create_schema_index("Non-profit", ['name'])
