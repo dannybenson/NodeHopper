@@ -20,8 +20,9 @@
    Typeahead
 =================================== */
 $(function() {
-  var substringMatcher = function(strs) {
-  return function findMatches(q, cb) {
+  var handleData = function(data) {
+    var substringMatcher = function(strs) {
+      return function findMatches(q, cb) {
     var matches, substringRegex;
 
     // an array that will be populated with substring matches
@@ -43,27 +44,26 @@ $(function() {
     };
   };
 
-  var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-    'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-  ];
-
   $('.typeahead').typeahead({
     hint: true,
     highlight: true,
     minLength: 1
   },
   {
-    name: 'states',
+    name: 'interests',
     displayKey: 'value',
-    source: substringMatcher(states)
+    source: substringMatcher(data)
   });
+
+
+  }
+  var get_data = function (handleData) { $.get( "/typeahead", function(data) {
+    handleData(data)
+  })}
+
+  // get_interests;
+  get_data(handleData);
+
 })
 /* =================================
    LOADER
