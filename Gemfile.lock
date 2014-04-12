@@ -76,6 +76,7 @@ GEM
     mini_portile (0.5.3)
     minitest (4.7.5)
     multi_json (1.9.2)
+    neo4j-cypher (1.0.3)
     neography (1.4.1)
       httpclient (>= 2.3.3)
       json (>= 1.7.7)
@@ -92,6 +93,8 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
@@ -196,9 +199,10 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   launchy
+  neo4j-cypher
   neography
   pg
-  pry
+  pry-rails
   rails (= 4.0.4)
   rails_12factor
   rspec-rails
