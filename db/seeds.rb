@@ -1,10 +1,4 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+#needs unique node implementation for all nodes
 require 'JSON'
 
 json = JSON.parse(File.read('db/cj.json'))
@@ -88,4 +82,7 @@ user_tv.each do |k,v|
       @neo.create_relationship("like", user, m)
   end
 end
-
+@neo.create_schema_index("Interest", ['name'])
+@neo.create_schema_index("Movie", ['name'])
+@neo.create_schema_index("Music", ['name'])
+@neo.create_schema_index("Tv", ['name'])
