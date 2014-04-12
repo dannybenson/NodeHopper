@@ -29,19 +29,13 @@ class HomeController < ApplicationController
   	@neo=Neography::Rest.new
   	
 
-# MATCH user-[:likes]->Movie<-[:likes]-person-[:likes]->stuff
-# WHERE NOT user-[:likes]->stuff
-# RETURN stuff   
+ 
   	@test = a
   	@test = @neo.get_node_relationships(node1)   
   	
 		@node= @neo.execute_query("match (user{ name:'Me'}) return user")
   	
   	@me = @neo.get_node(8)['data']['name']
-
-
-
-
 
   end
 
