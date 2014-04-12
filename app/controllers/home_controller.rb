@@ -3,6 +3,10 @@ class HomeController < ApplicationController
   end
 
   def template
+  end
+
+  def typeahead
 
   end
+
 end
