@@ -40,7 +40,7 @@ user_movies.each do |k,v|
     "whatever"
   else
     user = @neo.create_node("user_id" => k)
-    @neo.add_label(user, "user")
+    @neo.add_label(user, "Person")
   end
   v.each do |movie|
     if m = @neo.find_nodes_labeled('movie', {:name => movie["name"]}).first
@@ -57,7 +57,7 @@ user_music.each do |k,v|
     "whatever"
   else
     user = @neo.create_node("user_id" => k)
-    @neo.add_label(user, "user")
+    @neo.add_label(user, "Person")
   end
   v.each do |music|
     if m = @neo.find_nodes_labeled('music', {:name => music["name"]}).first
@@ -76,7 +76,7 @@ user_tv.each do |k,v|
     "whatever"
   else
     user = @neo.create_node("user_id" => k)
-    @neo.add_label(user, "user")
+    @neo.add_label(user, "Person")
   end
   v.each do |tv|
     if m = @neo.find_nodes_labeled('tv', {:name => tv["name"]}).first
