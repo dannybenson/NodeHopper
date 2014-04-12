@@ -14,6 +14,7 @@ TeamKen::Application.routes.draw do
   
 
 
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
