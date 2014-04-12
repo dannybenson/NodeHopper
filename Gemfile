@@ -33,8 +33,9 @@ group :doc do
 end
 
 # Additional Gems
-gem 'pry'
+gem 'pry-rails'
 gem 'neography'
+gem 'neo4j-cypher'
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
