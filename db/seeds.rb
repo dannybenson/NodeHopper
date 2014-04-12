@@ -47,7 +47,7 @@ user_movies.each do |k,v|
       "whatever"
     else
       m = @neo.create_node('name' => movie['name'])
-      @neo.add_label(m, "movie")
+      @neo.set_label(m, ["Interest", "Movie"])
     end
       @neo.create_relationship("like", user, m)
   end
@@ -64,7 +64,7 @@ user_music.each do |k,v|
       "whatever"
     else
       m = @neo.create_node('name' => music['name'])
-      @neo.add_label(m, "music")
+      @neo.set_label(m, ["Interest", "Music"])
     end
       @neo.create_relationship("like", user, m)
   end
@@ -83,8 +83,9 @@ user_tv.each do |k,v|
       "whatever"
     else
       m = @neo.create_node('name' => tv['name'])
-      @neo.add_label(m, "tv")
+      @neo.set_label(m, ["Interest", "Tv"])
     end
       @neo.create_relationship("like", user, m)
   end
 end
+
