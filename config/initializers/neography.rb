@@ -11,5 +11,3 @@ Neography.configure do |conf|
   conf.username = uri.user
   conf.password = uri.password
 end
-
-@neo = Neography::Rest.new
