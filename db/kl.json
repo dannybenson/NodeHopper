@@ -1,8 +1,4 @@
-{
-  "id": "2534398",
-  "name": "Ken Luk",
-  "friends": {
-    "data": [
+[
       {
         "name": "Isaac Wang",
         "id": "215307",
@@ -37042,9 +37038,4 @@
         "name": "Dan Petersen",
         "id": "100007116000005"
       }
-    ],
-    "paging": {
-      "next": "https://graph.facebook.com/2534398/friends?fields=name,likes&limit=5000&offset=5000&__after_id=100007116000005"
-    }
-  }
-}
+    ]
