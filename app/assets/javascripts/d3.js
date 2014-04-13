@@ -81,8 +81,8 @@ var path = svg.datum(root).selectAll("path")
       .on("mouseout", function(d) {return title.style("visibility", "hidden")});
 
 var transition = d3.transition()
-  .delay(500)
-  .duration(2000);
+  .delay(200)
+  .duration(3000);
 
 transition.each(function() {
     d3.selectAll("g").transition()
