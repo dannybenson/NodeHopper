@@ -20,50 +20,28 @@
    Typeahead
 =================================== */
 $(function() {
-  var handleData = function(data) {
-    var substringMatcher = function(strs) {
-      return function findMatches(q, cb) {
-    var matches, substringRegex;
-
-    // an array that will be populated with substring matches
-    matches = [];
-
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
-
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        // the typeahead jQuery plugin expects suggestions to a
-        // JavaScript object, refer to typeahead docs for more info
-        matches.push({ value: str });
-      }
-    });
-    cb(matches);
-    };
-  };
-
-  $('.typeahead').typeahead({
-    hint: true,
-    highlight: true,
-    minLength: 1
-  },
-  {
-    name: 'interests',
-    displayKey: 'value',
-    source: substringMatcher(data)
-  });
-
-
+var interests = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  limit: 10,
+  prefetch: {
+    url: '/typeahead',
   }
-  var get_data = function (handleData) { $.get( "/typeahead", function(data) {
-    handleData(data)
-  })}
-
-  // get_interests;
-  get_data(handleData);
-
+});
+ 
+// kicks off the loading/processing of `local` and `prefetch`
+interests.initialize();
+ 
+// passing in `null` for the `options` arguments will result in the default
+// options being used
+$('.typeahead').typeahead(null, {
+  highlighter: true,
+  name: 'Interests',
+  displayKey: 'name',
+  // `ttAdapter` wraps the suggestion engine in an adapter that
+  // is compatible with the typeahead jQuery plugin
+  source: interests.ttAdapter()
+});
 })
 /* =================================
    LOADER
