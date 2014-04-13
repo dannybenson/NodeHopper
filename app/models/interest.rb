@@ -3,15 +3,14 @@ require'neography'
 require'neo4j-cypher'
 class Interest
 
+	attr_reader :id,:name,:category
 
 
   def self.get_interest_names(label = "Interest")
-    @neo = ClientHelper.get_client
     @neo.get_nodes_labeled(label).map{ |labeled|  @neo.get_node_properties(labeled, 'name')["name"] }
   end
 
   def self.find_or_create_by(label, name)
-    @neo = ClientHelper.get_client
     if @neo.find_nodes_labeled(label, {:name => name}).empty?
       node = @neo.create_node("name" => name)
       @neo.add_label(node, ["Interest", label])
@@ -24,24 +23,22 @@ class Interest
 
 
 
-	@@neo = ClientHelper.get_client
 
-	@@node_count = 0 #?
-	attr_reader :id,:name,:category
+
+	
+	
 
 	def initialize(args)
-		if args.fetch(:id)
-			@id = args.fetch(:id)
-		else
-			@id||= count
-			@@count+=1
-		end
 		@category = args.fetch(:category)
 		@name = args.fetch(:name)
 	end	
 
 	def save
-		@neo.create_node("id" => self.id, "name" => self.name,"category" => self.category) unless self.in_database?
+		unless self.in_database? 
+			interest = 	@neo.create_node("name" => self.name,"category" => self.category) 
+			@neo.add_label(interest, "Interest")
+			@neo.add_label(interest, self.category)
+		end
 	end
 
 	def self.create(args)
@@ -50,14 +47,16 @@ class Interest
 	end
 
 	def destroy
-		node = @neo.get_node(self.id) 
-		@neo.delete_node!(node)
-		self		  
+		nodes = @neo.find_nodes_labeled("Interest", {:name => self.name})
+		nodes.each do |node|
+			@neo.delete_node!(node)
+		end
+		# nodes.first		  
 	end
 
-	def << 
+	# def << 
 
-	end
+	# end
 
 	def weighted_recommendations(number)
 		recommendations = self.recommendations['data'].map{|d| d['name']}
@@ -75,15 +74,11 @@ class Interest
 	end
 
 	def in_database?
-		@neo = ClientHelper.get_client
-		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"	
-		if @neo.execute_query(query)['data'][0]
-			true
+		if @neo.find_nodes_labeled(self.category, {:name => self.name}).empty?		
+			return false
 		else
-			false
+			true
 		end
 	end
-
 end
-
 
