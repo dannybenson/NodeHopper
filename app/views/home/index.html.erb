@@ -4,4 +4,10 @@
 
 <p>stuff coming soon...</p>
 
+   <div id="prefetch">
+            <%= form_tag("/search", method: "get", class: "form-inline") do %>
+              <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+              <%= submit_tag "Search", class: "btn btn-default" %>
+            <% end %>
+
 <div id="charts"></div>

@@ -4,48 +4,18 @@ var w = 500;
 var h = 500;
 var r = Math.min(w,h)/2;
 var color = d3.scale.category20c();
+var root = {};
 
-var root = {
-  "title": "params",
-  "children": [
-  {
-    "title": "Movies",
-    "children":[
-    {"title":"Departed",
-      "data": 30},
-    {"title":"The Shining",
-      "data": 70},
-    {"title":"The Help",
-      "data": 90},
-    {"title":"Tomoe",
-      "data": 50}
-    ]
-  },
-  {
-    "title": "Books",
-    "children":[
-    {"title":"1984",
-      "data": 30},
-    {"title":"Mockingjay",
-      "data": 69},
-    {"title":"Brave New World",
-      "data": 23}
-    ]
-  },
-  {
-    "title": "TV shows",
-    "children":[
-    {"title":"OOT",
-      "data": 78},
-    {"title":"Something Good",
-      "data": 20},
-    {"title":"Cosmos",
-      "data": 92}
-    ]
-  }
-  ]
-};
+$("#prefetch").on("click", function(event) {
+  event.preventDefault();
+  $.post("/test", function(result) {
+    console.log(result);
+    root = result;
+  }).done(dataDriven);
 
+})
+
+var dataDriven = function() {
 var svg = d3.select("#charts").append("svg")
   .attr("width", w)
   .attr("height", h)
@@ -68,6 +38,7 @@ var title = d3.select("body").append("text")
   .style("position", "absolute")
   .style("visibility","hidden");
 
+
 var path = svg.datum(root).selectAll("path")
     .data(partition.nodes)
     .enter().append("path")
@@ -89,5 +60,6 @@ transition.each(function() {
     .style("opacity", 1)
     .remove;
   })
+}
 
 })
