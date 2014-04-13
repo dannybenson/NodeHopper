@@ -19,29 +19,23 @@
 /* =================================
    Typeahead
 =================================== */
-$(function() {
-var interests = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  limit: 10,
-  prefetch: {
-    url: '/typeahead',
-  }
-});
- 
-// kicks off the loading/processing of `local` and `prefetch`
-interests.initialize();
- 
-// passing in `null` for the `options` arguments will result in the default
-// options being used
-$('.typeahead').typeahead(null, {
-  highlighter: true,
-  name: 'Interests',
-  displayKey: 'name',
-  // `ttAdapter` wraps the suggestion engine in an adapter that
-  // is compatible with the typeahead jQuery plugin
-  source: interests.ttAdapter()
-});
+jQuery(window).load(function() {
+  
+  var interests = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    limit: 10,
+    prefetch: {
+      url: '/typeahead',
+    }
+  }); 
+  interests.initialize();
+   
+  $('.typeahead').typeahead(null, {
+    name: 'interests',
+    displayKey: 'name',
+    source: interests.ttAdapter()
+  });
 })
 /* =================================
    LOADER
