@@ -70,6 +70,13 @@ friends.each do |friend|
   end
 end
 
+
+user_game = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Games/toys'} != []
+    user_game[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Games/toys'}
+  end
+end
 # user_movies.each do |k,v|
 #   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
 #     "whatever"
@@ -196,6 +203,24 @@ user_videogame.each do |k,v|
   end
 end
 
+user_game.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |game|
+    if m = @neo.find_nodes_labeled('game', {:name => game["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => game['name'])
+      @neo.add_label(m, ["game", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+
 # @neo.create_schema_index("interest", ["name"])
 # @neo.create_schema_index("movie", ["name"])
 # @neo.create_schema_index("music", ["name"])
@@ -204,5 +229,6 @@ end
 @neo.create_schema_index("author", ["name"])
 @neo.create_schema_index("non-profit", ["name"])
 @neo.create_schema_index("videogame", ["name"])
+@neo.create_schema_index("game", ["name"])
 
 
