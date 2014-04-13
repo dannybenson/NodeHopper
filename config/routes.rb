@@ -6,6 +6,7 @@ TeamKen::Application.routes.draw do
   root 'home#index'
   get '/template' => 'home#show'
   get '/typeahead' => 'home#typeahead'
+  post '/test' => 'home#show'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
