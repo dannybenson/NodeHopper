@@ -14,12 +14,12 @@ json.merge(JSON.parse(File.read('db/gs.json')))
 json.merge(JSON.parse(File.read('db/ss.json')))
 
 friends = json['friends']['data']
-# user_movies = {}
-# friends.each do |friend|
-#   if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Movie'} != []
-#     user_movies[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Movie'}
-#   end
-# end
+user_movies = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Movie'} != []
+    user_movies[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Movie'}
+  end
+end
 
 user_music = {}
 friends.each do |friend|
@@ -35,23 +35,29 @@ friends.each do |friend|
   end
 end
 
-# user_movies.each do |k,v|
-#   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
-#     "whatever"
-#   else
-#     user = @neo.create_node("user_id" => k)
-#     @neo.add_label(user, "user")
-#   end
-#   v.each do |movie|
-#     if m = @neo.find_nodes_labeled('movie', {:name => movie["name"]}).first
-#       "whatever"
-#     else
-#       m = @neo.create_node('name' => movie['name'])
-#       @neo.add_label(m, "movie")
-#     end
-#       @neo.create_relationship("like", user, m)
-#   end
-# end
+user_book = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Book'} != []
+    user_book[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Book'}
+  end
+end
+user_movies.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |movie|
+    if m = @neo.find_nodes_labeled('movie', {:name => movie["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => movie['name'])
+      @neo.add_label(m, ["movie", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
 user_music.each do |k,v|
   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
     "whatever"
@@ -64,7 +70,7 @@ user_music.each do |k,v|
       "whatever"
     else
       m = @neo.create_node('name' => music['name'])
-      @neo.add_label(m, "music")
+      @neo.add_label(m, ["music", "interest"])
     end
       @neo.create_relationship("like", user, m)
   end
@@ -83,8 +89,27 @@ user_tv.each do |k,v|
       "whatever"
     else
       m = @neo.create_node('name' => tv['name'])
-      @neo.add_label(m, "tv")
+      @neo.add_label(m, ["tv", "interest"])
     end
       @neo.create_relationship("like", user, m)
   end
 end
+
+user_book.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |book|
+    if m = @neo.find_nodes_labeled('book', {:name => book["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => book['name'])
+      @neo.add_label(m, ["book", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+
