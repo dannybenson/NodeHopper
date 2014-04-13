@@ -113,3 +113,8 @@ user_book.each do |k,v|
   end
 end
 
+@neo.create_schema_index("interest", ["name"])
+@neo.create_schema_index("movie", ["name"])
+@neo.create_schema_index("music", ["name"])
+@neo.create_schema_index("tv", ["name"])
+@neo.create_schema_index("book", ["name"])
