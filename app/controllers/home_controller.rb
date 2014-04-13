@@ -24,10 +24,16 @@ class HomeController < ApplicationController
 
   end
 
+
   def test
 
   	@neo=Neography::Rest.new
+    cat = 'fleep'
+    query = 'MATCH (interest {name:{'+cat+'}) RETURN interest.name'
+    @test = query
+
   	
+
 
  
   	@test = a
@@ -36,6 +42,7 @@ class HomeController < ApplicationController
 		@node= @neo.execute_query("match (user{ name:'Me'}) return user")
   	
   	@me = @neo.get_node(8)['data']['name']
+
 
   end
 

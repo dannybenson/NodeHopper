@@ -1,4 +1,8 @@
+
+require'neography'
+require'neo4j-cypher'
 class Interest
+
 
 
   def self.get_interest_names(label = "Interest")
@@ -18,28 +22,41 @@ class Interest
   end
 
 
-	@neo=Neography::Rest.new
-	@@node_count = 0 #?
-	attr_reader :id,:name,:category,
 
-	def new(args)
+
+	@@neo = ClientHelper.get_client
+
+	@@node_count = 0 #?
+	attr_reader :id,:name,:category
+
+	def initialize(args)
 		if args.fetch(:id)
 			@id = args.fetch(:id)
 		else
 			@id||= count
+			@@count+=1
 		end
-
 		@category = args.fetch(:category)
 		@name = args.fetch(:name)
 	end	
 
 	def save
-		@neo.create_node(("id" => this.id, "name" => this.name,"category" => this.category)) unless self.in_database?
+		@neo.create_node("id" => self.id, "name" => self.name,"category" => self.category) unless self.in_database?
 	end
 
 	def self.create(args)
-		self.new(args)
-		self.save		
+		node = self.new(args)
+		node.save		
+	end
+
+	def destroy
+		node = @neo.get_node(self.id) 
+		@neo.delete_node!(node)
+		self		  
+	end
+
+	def << 
+
 	end
 
 	def weighted_recommendations(number)
@@ -51,16 +68,22 @@ class Interest
     JSON.generate(results.sort{ |a,b| b[:value] <=> a[:value]}[0..number])
   end
 
-	private
+
 
 	def recommendations  
 		@neo.execute_query('MATCH (movie {name})--(person)--(recommendation) WHERE NOT movie=recommendation RETURN recommendation.name',{:name => self.name})['data']
 	end
 
 	def in_database?
-		@neo.execute_query('MATCH (this {name}) RETURN recommendation.name',{:name => self.name})['data']
+		@neo = ClientHelper.get_client
+		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"	
+		if @neo.execute_query(query)['data'][0]
+			true
+		else
+			false
+		end
 	end
 
->>>>>>> ORM
 end
+
 

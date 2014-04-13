@@ -1,0 +1,60 @@
+{
+  "RSpec": {
+    "coverage": {
+      "/Users/katherineanderson/Desktop/Team_Ken/app/helpers/application_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/katherineanderson/Desktop/Team_Ken/app/helpers/home_helper.rb": [
+        1,
+        null
+      ],
+      "/Users/katherineanderson/Desktop/Team_Ken/app/controllers/home_controller.rb": [
+        1,
+        null,
+        1,
+        1,
+        0,
+        null,
+        0,
+        null,
+        0,
+        0,
+        0,
+        null,
+        0,
+        null,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1,
+        null,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "/Users/katherineanderson/Desktop/Team_Ken/app/controllers/application_controller.rb": [
+        1,
+        null,
+        null,
+        1,
+        null
+      ]
+    },
+    "timestamp": 1397420476
+  }
+}
