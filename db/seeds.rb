@@ -12,6 +12,7 @@ json.merge(JSON.parse(File.read('db/kl.json')))
 json.merge(JSON.parse(File.read('db/ka.json')))
 json.merge(JSON.parse(File.read('db/gs.json')))
 json.merge(JSON.parse(File.read('db/ss.json')))
+json.merge(JSON.parse(File.read('db/cj.json')))
 
 friends = json['friends']['data']
 user_movies = {}
@@ -77,59 +78,59 @@ friends.each do |friend|
     user_game[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Games/toys'}
   end
 end
-# user_movies.each do |k,v|
-#   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
-#     "whatever"
-#   else
-#     user = @neo.create_node("user_id" => k)
-#     @neo.add_label(user, "user")
-#   end
-#   v.each do |movie|
-#     if m = @neo.find_nodes_labeled('movie', {:name => movie["name"]}).first
-#       "whatever"
-#     else
-#       m = @neo.create_node('name' => movie['name'])
-#       @neo.add_label(m, ["movie", "interest"])
-#     end
-#       @neo.create_relationship("like", user, m)
-#   end
-# end
-# user_music.each do |k,v|
-#   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
-#     "whatever"
-#   else
-#     user = @neo.create_node("user_id" => k)
-#     @neo.add_label(user, "user")
-#   end
-#   v.each do |music|
-#     if m = @neo.find_nodes_labeled('music', {:name => music["name"]}).first
-#       "whatever"
-#     else
-#       m = @neo.create_node('name' => music['name'])
-#       @neo.add_label(m, ["music", "interest"])
-#     end
-#       @neo.create_relationship("like", user, m)
-#   end
-# end
+user_movies.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |movie|
+    if m = @neo.find_nodes_labeled('movie', {:name => movie["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => movie['name'])
+      @neo.add_label(m, ["movie", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+user_music.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |music|
+    if m = @neo.find_nodes_labeled('music', {:name => music["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => music['name'])
+      @neo.add_label(m, ["music", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
 
 
-# user_tv.each do |k,v|
-#   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
-#     "whatever"
-#   else
-#     user = @neo.create_node("user_id" => k)
-#     @neo.add_label(user, "user")
-#   end
-#   v.each do |tv|
-#     if m = @neo.find_nodes_labeled('tv', {:name => tv["name"]}).first
-#       "whatever"
-#     else
-#       m = @neo.create_node('name' => tv['name'])
-#       @neo.add_label(m, ["tv", "interest"])
-#     end
-#       @neo.create_relationship("like", user, m)
-#   end
-# end
+user_tv.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |tv|
+    if m = @neo.find_nodes_labeled('tv', {:name => tv["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => tv['name'])
+      @neo.add_label(m, ["tv", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
 
 user_book.each do |k,v|
   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
@@ -221,10 +222,10 @@ user_game.each do |k,v|
   end
 end
 
-# @neo.create_schema_index("interest", ["name"])
-# @neo.create_schema_index("movie", ["name"])
-# @neo.create_schema_index("music", ["name"])
-# @neo.create_schema_index("tv", ["name"])
+@neo.create_schema_index("interest", ["name"])
+@neo.create_schema_index("movie", ["name"])
+@neo.create_schema_index("music", ["name"])
+@neo.create_schema_index("tv", ["name"])
 @neo.create_schema_index("book", ["name"])
 @neo.create_schema_index("author", ["name"])
 @neo.create_schema_index("non-profit", ["name"])
