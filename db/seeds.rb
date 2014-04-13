@@ -49,6 +49,27 @@ friends.each do |friend|
   end
 end
 
+user_np = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'} != []
+    user_np[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'}
+  end
+end
+
+user_np = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'} != []
+    user_np[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Non-profit organization'}
+  end
+end
+
+user_videogame = {}
+friends.each do |friend|
+  if friend['likes'] && friend['likes']['data'].select { |interest| interest['category'] == 'Video game'} != []
+    user_videogame[friend['id']] = friend['likes']['data'].select { |interest| interest['category'] == 'Video game'}
+  end
+end
+
 # user_movies.each do |k,v|
 #   if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
 #     "whatever"
@@ -139,10 +160,49 @@ user_author.each do |k,v|
   end
 end
 
+user_np.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |np|
+    if m = @neo.find_nodes_labeled('non-profit', {:name => np["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => np['name'])
+      @neo.add_label(m, ["non-profit", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+
+user_videogame.each do |k,v|
+  if user = @neo.find_nodes_labeled('user', {:user_id => k}).first
+    "whatever"
+  else
+    user = @neo.create_node("user_id" => k)
+    @neo.add_label(user, "user")
+  end
+  v.each do |videogame|
+    if m = @neo.find_nodes_labeled('videogame', {:name => videogame["name"]}).first
+      "whatever"
+    else
+      m = @neo.create_node('name' => videogame['name'])
+      @neo.add_label(m, ["videogame", "interest"])
+    end
+      @neo.create_relationship("like", user, m)
+  end
+end
+
 # @neo.create_schema_index("interest", ["name"])
 # @neo.create_schema_index("movie", ["name"])
 # @neo.create_schema_index("music", ["name"])
 # @neo.create_schema_index("tv", ["name"])
 @neo.create_schema_index("book", ["name"])
 @neo.create_schema_index("author", ["name"])
+@neo.create_schema_index("non-profit", ["name"])
+@neo.create_schema_index("videogame", ["name"])
+
 
