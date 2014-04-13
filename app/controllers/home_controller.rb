@@ -6,7 +6,7 @@ class HomeController < ApplicationController
   end
 
   def typeahead
-    render json: Interest.get_interest_names("movie")
+    render json: Interest.get_interest_names
   end
 
 end

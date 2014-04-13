@@ -1,8 +1,4 @@
-{
-  "id": "1290763802",
-  "name": "Greg Santikian",
-  "friends": {
-    "data": [
+[
       {
         "name": "Julia Tapper",
         "id": "2202603"
@@ -39964,9 +39960,4 @@
         "name": "Osagie Om",
         "id": "100007080844247"
       }
-    ],
-    "paging": {
-      "next": "https://graph.facebook.com/1290763802/friends?fields=name,likes&limit=5000&offset=5000&__after_id=100007080844247"
-    }
-  }
-}
+    ]
