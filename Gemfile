@@ -36,6 +36,8 @@ end
 gem 'pry-rails'
 gem 'neography'
 gem 'neo4j-cypher'
+gem 'byebug'
+
 
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
