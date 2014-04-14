@@ -6,6 +6,7 @@ class HomeController < ApplicationController
   end
 
   def template
+  	render 'show'
   end
 
   def typeahead
@@ -13,7 +14,7 @@ class HomeController < ApplicationController
   end
 
  	def show
- 		Interest.find(params["search"]).donut
+ 		render json: Interest.find(params["search"]).donut(40)
 
  	end
 

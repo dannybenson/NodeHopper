@@ -7,7 +7,7 @@ class Interest
 
   def self.get_interest_names(label = "Interest")
     @@neo = ClientHelper.get_client
-    @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}  
+    @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
   end
 
   def self.find_or_create_by(label, name)
@@ -24,14 +24,14 @@ class Interest
 
 
 
-	
+
 
 	attr_reader :id,:name,:category
 
 	def initialize(args)
 		@category = args.fetch(:category)
 		@name = args.fetch(:name)
-	end	
+	end
 
 	def save
 		interest = @@neo.create_node("name" => self.name) unless self.in_database?
@@ -42,7 +42,7 @@ class Interest
 
 	# def self.create(args)
 	# 	node = self.new(args)
-	# 	node.save		
+	# 	node.save
 	# end
 
 	def destroy
@@ -50,7 +50,7 @@ class Interest
 		nodes.each do |node|
 			@@neo.delete_node!(node)
 		end
-		self		  
+		self
 	end
 
 	def self.find(name)
@@ -58,11 +58,11 @@ class Interest
 		if node
 			name = @@neo.get_node_properties(node)["name"]
 			category = "yeah, this doesn't support category yet"#this...needs fixing
-			Interest.new({name:name,category:category})
+			return interest = Interest.new({name:name,category:category})
 		end
 	end
 
-	# def << 
+	# def <<
 
 	# end
 
@@ -88,19 +88,19 @@ class Interest
   		category_recs.each do |c, title, freq|
   			children << {"title" => title, "data" => freq}
   		end
-  		results['children'] << {'title' => category, 'children' => children}  
+  		results['children'] << {'title' => category, 'children' => children}
   	end
   	results
   end
 
 
 
-	def recommendations  
+	def recommendations
 		result = @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
 	end
 
 	def in_database?
-		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"	
+		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
 		if @@neo.find_nodes_labeled(self.category,{:name => self.name}).first
 			true
 		else

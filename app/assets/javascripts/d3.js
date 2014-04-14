@@ -8,8 +8,9 @@ var root = {};
 
 $("#prefetch").on("submit", function(event) {
   event.preventDefault();
+  d3.select("#charts").innerHTML = "";
   var input = { search: $("#search").val()};
-  $.post("/test", input, function(result) {
+  $.post("/search", input, function(result) {
     console.log(result);
     root = result;
   }, "json").done(dataDriven);
