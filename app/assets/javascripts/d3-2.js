@@ -10,7 +10,7 @@ $(document).ready(function() {
           var force = d3.layout.force()
               .on("tick", tick)
               .charge(function(d) { return d._children ? -d.size : -30; })
-              .linkDistance(function(d) { return d.target._children ? 190 : 30; })
+              .linkDistance(function(d) { return d.target._children ? 300 : 30; })
               .size([w, h]);
 
           var vis = d3.select("#chart").append("svg")
@@ -25,9 +25,9 @@ $(document).ready(function() {
                 root.y = h / 2;
                 update();
               });
-          // $.get('/d3-2', function(data){
-          //   console.log(data)
-          // })
+          $.get('/d3-2', function(data){
+            console.log(data)
+          })
 
           function update() {
             var nodes = flatten(root),
