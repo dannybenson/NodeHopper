@@ -3,11 +3,10 @@ TeamKen::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
   root 'home#index'
   get '/template' => 'home#template'
-
+  get '/sigma' => 'home#sigma'
+  get '/data' => 'home#data'
   get '/typeahead' => 'home#typeahead'
-  # Example of regular rou  #   get 'products/:id' => 'catalog#view'
   get '/search' => "home#template"
-
   post '/search' => 'home#show'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
