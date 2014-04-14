@@ -1,15 +1,13 @@
 
 #needs unique node implementation for all nodes
 
+require 'json'
+
 json = JSON.parse(File.read('db/kl.json'))
 json = json | JSON.parse(File.read('db/cj.json'))
 json = json | JSON.parse(File.read('db/gs.json'))
 json = json | JSON.parse(File.read('db/ka.json'))
 json = json | JSON.parse(File.read('db/ss.json'))
-
-
-require 'json'
-
 
 
 # reject users without likes
