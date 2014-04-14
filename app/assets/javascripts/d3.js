@@ -8,7 +8,7 @@ var root = {};
 
 $("#prefetch").on("submit", function(event) {
   event.preventDefault();
-  d3.select("#charts").innerHTML = "";
+  d3.select("#charts svg").remove();
   var input = { search: $("#search").val()};
   $.post("/search", input, function(result) {
     console.log(result);
