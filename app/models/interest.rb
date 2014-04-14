@@ -53,11 +53,11 @@ class Interest
 		self		  
 	end
 
-	def self.find(label,name)
-		node = @@neo.find_nodes_labeled(label, {:name => name}).first
+	def self.find(name)
+		node = @@neo.find_nodes_labeled("Interest", {:name => name}).first
 		if node
 			name = @@neo.get_node_properties(node)["name"]
-			category = label
+			category = "yeah, this doesn't support category yet"#this...needs fixing
 			Interest.new({name:name,category:category})
 		end
 	end

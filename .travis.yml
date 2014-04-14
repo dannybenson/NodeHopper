@@ -3,4 +3,4 @@ language: ruby
  - "2.0.0"
 
 services:
-- neo4j 
+ - neo4j 
