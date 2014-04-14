@@ -22,8 +22,26 @@ class Interest
   end
 
 
+  def self.node_matrix(interest, label="Interest")
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1)--(p2)--(ri2) RETURN startnode.name, ri1.name, ri2.name ORDER BY startnode.name, ri1.name, ri2.name")['data']
+    paths = paths.uniq.map {|path| path << paths.count(path) }
+    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
+    Interest.with_children(paths)
+  end
 
-
+# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+def self.with_children(node)
+  if node[node.keys.first].keys.first.is_a?(Integer)
+    { "name" => node.keys.first,
+      "size" => 1 + node[node.keys.first].keys.first
+     }
+  else
+    { "name" => node.keys.first,
+      "children" => node[node.keys.first].collect { |c|
+        with_children(Hash[c[0], c[1]]) }
+    }
+  end
+end
 
 
 	attr_reader :id,:name,:category

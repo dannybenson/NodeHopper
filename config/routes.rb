@@ -5,6 +5,7 @@ TeamKen::Application.routes.draw do
   get '/template' => 'home#template'
   get '/sigma' => 'home#sigma'
   get '/data' => 'home#data'
+  get '/d3-2' => 'home#d3_2'
   get '/typeahead' => 'home#typeahead'
   get '/search' => "home#template"
   post '/search' => 'home#show'
