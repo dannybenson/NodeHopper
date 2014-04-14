@@ -6,13 +6,13 @@ var r = Math.min(w,h)/2;
 var color = d3.scale.category20c();
 var root = {};
 
-$("#prefetch").on("click", function(event) {
+$("#prefetch").on("submit", function(event) {
   event.preventDefault();
-  $.post("/test", function(result) {
+  var input = { search: $("#search").val()};
+  $.post("/test", input, function(result) {
     console.log(result);
     root = result;
-  }).done(dataDriven);
-
+  }, "json").done(dataDriven);
 })
 
 var dataDriven = function() {
