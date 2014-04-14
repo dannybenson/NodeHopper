@@ -1,4 +1,7 @@
+require 'json'
+
 class HomeController < ApplicationController
+
   def index
   end
 
@@ -8,5 +11,5 @@ class HomeController < ApplicationController
   def typeahead
     render json: Interest.get_interest_names
   end
-
 end
+
