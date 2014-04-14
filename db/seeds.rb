@@ -1,3 +1,4 @@
+
 #needs unique node implementation for all nodes
 require 'JSON'
 # require 'byebug'
@@ -6,6 +7,7 @@ json = json | JSON.parse(File.read('db/cj.json'))
 json = json | JSON.parse(File.read('db/gs.json'))
 json = json | JSON.parse(File.read('db/ka.json'))
 json = json | JSON.parse(File.read('db/ss.json'))
+
 
 # reject users without likes
 json = json.reject{ |obj| obj["likes"].nil? }
