@@ -88,8 +88,8 @@ end
 		self
 	end
 
-	def weighted_recommendations(number)
-		recommendations = self.recommendations
+	def self.weighted_recommendations(interest1,interest2,number)
+		recommendations = self.recommendations(interest1,interest2=nil)
     if recommendations
 	    results = []
 	    # titles = recommendations.map{|title| title[1]}
@@ -104,8 +104,8 @@ end
 	  end
   end
 
-  def percentage_recommendations(number)
-  	recommendations = self.weighted_recommendations(number)
+  def self.percentage_recommendations(interest1,interest2,number)
+  	recommendations = self.weighted_recommendations(interest1,interest2,number)
   	if recommendations
 	    categories = recommendations.map{|interest| interest[0]}.uniq 
 	    category_count = {}
@@ -129,8 +129,8 @@ end
 
 
 
-  def donut(number)
-  	input = self.percentage_recommendations(number)
+  def self.donut(interest1,interest2,number)
+  	input = self.percentage_recommendations(interest1,interest2,number)
   	if input
 	  	results = {'title' => '', 'children' => []}
 	  	categories = input.map(&:first).uniq
@@ -159,6 +159,24 @@ end
 		end
 	end
 
+	def self.recommendations(interest1,interest2=nil)
+		if interest2
+			result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name
+																	UNION ALL
+																	MATCH (interest {name:'"+ interest2.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+			result.reject!{|interest| interest[1]==interest1.name || interest[1]==interest2.name}
+		else
+			result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+		end
+		if result[0]
+			return result
+		else
+			return nil
+		end
+	end
+
+
+
 	def in_database?
 		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
 		if @@neo.find_nodes_labeled("Interest",{:name => self.name}).first
@@ -167,4 +185,8 @@ end
 			false
 		end
 	end
+
+
+
 end
+
