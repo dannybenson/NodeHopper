@@ -12,7 +12,7 @@ describe Person do
   		expect(a.user_id_hash).to eq(11111)
   	end
   end
-  
+
   describe "save" do
   	it "creates a node" do
   		@neo = ClientHelper.get_client
@@ -38,10 +38,12 @@ describe Person do
   describe "in_database?" do
   	it "returns true if the interest is in the database" do
   		@neo = ClientHelper.get_client
-      id = 3173039013545997367
+      id = 23
   		a = Person.new({user_id_hash: id})
+      a.save
   		b = a.in_database?
   		expect(b).to eq(true)
+      a.destroy
   	end 
 
   	it "returns false if the interest is not in the database" do
@@ -65,9 +67,11 @@ describe Person do
 
   describe "self.find" do
     it "returns the node searched for if it exists" do
-      a = Person.new({user_id_hash: 3173039013545997367})
-      b = Person.find(3173039013545997367)
+      a = Person.new({user_id_hash: 22})
+      a.save
+      b = Person.find(22)
       expect(b.user_id_hash).to eq(a.user_id_hash)
+      a.destroy
     end
 
     it "returns nil if the node searched for does not exist" do
