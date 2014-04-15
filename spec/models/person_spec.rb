@@ -12,6 +12,7 @@ describe Person do
   		expect(a.user_id_hash).to eq(11111)
   	end
   end
+  
   describe "save" do
   	it "creates a node" do
   		@neo = ClientHelper.get_client
