@@ -45,7 +45,7 @@ var path = svg.datum(root).selectAll("g")
     .enter().append("g")
 
     path.append("path")
-      .attr("class", function(d) {if (d.data) {return d.title + ","+ d.data} else { return d.title}})
+      .attr("class", function(d) {if (d.data) {return d.title + ","+ d.data + "%"} else { return d.title}})
       .attr("d", arc)
       .attr("display", function(d) {return d.depth ? null : "none" ;})
       .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
