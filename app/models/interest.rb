@@ -6,7 +6,7 @@ class Interest
 	@@neo = ClientHelper.get_client
 
   def self.get_interest_names(label = "Interest")
-    @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
+    @@neo.execute_query("MATCH (n:Interest) RETURN n.name")['data'].inject(Array.new){ |array, name| array << {"name" => name.first}}
   end
 
   def self.find_or_create_by(label, name)
@@ -21,7 +21,7 @@ class Interest
 
 
   def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name LIMIT 10")['data']
     paths = paths.uniq.map {|path| path << paths.count(path) }
     paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
     Interest.with_children(paths)
@@ -51,7 +51,7 @@ end
 
 	def save
 		unless self.in_database?
-			interest = @@neo.create_node("name" => self.name) 
+			interest = @@neo.create_node("name" => self.name)
 			@@neo.add_label(interest, "Interest")
 			@@neo.add_label(interest, self.category)
 		end
@@ -107,11 +107,11 @@ end
   def percentage_recommendations(number)
   	recommendations = self.weighted_recommendations(number)
   	if recommendations
-	    categories = recommendations.map{|interest| interest[0]}.uniq 
+	    categories = recommendations.map{|interest| interest[0]}.uniq
 	    category_count = {}
 	    categories.each do |category|
 		    count = 0
-		    recommendations.each do |interest| 
+		    recommendations.each do |interest|
 	      	if interest[0] == category
 	      		count+=interest[2]
 	      	end
