@@ -50,9 +50,11 @@ end
 	end
 
 	def save
-		interest = @@neo.create_node("name" => self.name) unless self.in_database?
-		@@neo.add_label(interest, "Interest")
-		@@neo.add_label(interest, self.category)
+		unless self.in_database?
+			interest = @@neo.create_node("name" => self.name) 
+			@@neo.add_label(interest, "Interest")
+			@@neo.add_label(interest, self.category)
+		end
 		self
 	end
 
@@ -81,8 +83,9 @@ end
 
 	def <<(person)
 		interest = @@neo.find_nodes_labeled("Interest", {:name => self.name}).first
-		person = @@neo.find_nodes_labeled("Person", {:fb_id_hash => person.fb_id_hash}).first
+		person = @@neo.find_nodes_labeled("Person", {:user_id_hash => person.user_id_hash}).first
 		@@neo.create_relationship("like",person, interest)
+		self
 	end
 
 	def weighted_recommendations(number)
@@ -95,14 +98,39 @@ end
 	      title << recommendations.count{|interest| interest[1] == title[1]}
 	      results << title
 	    end
-	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number]
+	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number-1]
 	  else
 	  	nil
 	  end
   end
 
+  def percentage_recommendations(number)
+  	recommendations = self.weighted_recommendations(number)
+  	if recommendations
+	    categories = recommendations.map{|interest| interest[0]}.uniq 
+	    category_count = {}
+	    categories.each do |category|
+		    count = 0
+		    recommendations.each do |interest| 
+	      	if interest[0] == category
+	      		count+=interest[2]
+	      	end
+	    	end
+	    	category_count[category] = count
+	    end
+	    return recommendations.map{|interest| [interest[0],interest[1],interest[2].to_f/category_count[interest[0]].to_f]}
+	  else
+	  	nil
+	  end
+  end
+
+
+
+
+
+
   def donut(number)
-  	input = self.weighted_recommendations(number)
+  	input = self.percentage_recommendations(number)
   	if input
 	  	results = {'title' => '', 'children' => []}
 	  	categories = input.map(&:first).uniq
@@ -138,9 +166,5 @@ end
 		else
 			false
 		end
-	end
-
-	def bubbles(number)
-		self.donut(number)['children']
 	end
 end
