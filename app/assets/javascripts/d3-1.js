@@ -34,15 +34,15 @@ var arc = d3.svg.arc()
   .outerRadius(function(d){ return r/3 * (d.depth + .92) - 2});
 
 var title = d3.select("body").append("text")
-  .attr("class", "title")
-  .attr("transform", "rotate(20,20,20)")
   .style("position", "absolute")
   .style("visibility","hidden");
 
 
-var path = svg.datum(root).selectAll("path")
+var path = svg.datum(root).selectAll("g")
     .data(partition.nodes)
-    .enter().append("path")
+    .enter().append("g")
+
+    path.append("path")
       .attr("class", function(d) {if (d.data) {return d.title + ","+ d.data} else { return d.title}})
       .attr("d", arc)
       .attr("display", function(d) {return d.depth ? null : "none" ;})
@@ -51,6 +51,11 @@ var path = svg.datum(root).selectAll("path")
       .on("mouseover", function(d) {return title.text(this.className.animVal).style("visibility","visible");})
       .on("mousemove", function(d) {return title.style("top", (event.pageY-10) + "px").style("left", (event.pageX+10)+ "px");})
       .on("mouseout", function(d) {return title.style("visibility", "hidden")});
+
+  path.append("text")
+    .attr("class", "text")
+    .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
+    .text(function(d) {if (d.title.length > 11) {return d.title.split(" ")[1];} else{ return d.title;}})
 
 var transition = d3.transition()
   .delay(200)
