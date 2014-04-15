@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  var w = 600,
-    h = 500,
+  var w = 1200,
+    h = 800,
     node,
     link,
     i = 0,
@@ -13,14 +13,12 @@ $(document).ready(function() {
     d3.select("#d3-2-chart svg").remove();
     var input = { search: $("#d3_2 #search").val()};
     $.post("/d3_2", input, function(result) {
-      console.log(result);
       json = result;
     }, "json").done(d3_2);
   })
   var d3_2 = function() {
     var force = d3.layout.force()
       .charge(-1800)
-      .gravity(0.4)
       .size([w, h]);
 
     var vis = d3.select("#d3-2-chart").append("svg")
@@ -62,15 +60,12 @@ $(document).ready(function() {
           return d.id
       })
           .on('click', click)
-          .call(force.drag);
 
 
-      groups.append("image")
-          .attr("xlink:href", "https://github.com/favicon.ico")
-          .attr("x", -8)
-          .attr("y", -8)
-          .attr("width", 16)
-          .attr("height", 16);
+
+      groups.append("circle")
+          .attr("r", 20)
+          .style("fill", "#0196A7")
 
 
       groups.append("text")
@@ -78,7 +73,6 @@ $(document).ready(function() {
           .attr("dy", "0.35em")
           .style("font-size", "10px")
           .text(function (d) {
-          console.log(d.name);
           return d.name
       });
 
@@ -111,7 +105,6 @@ $(document).ready(function() {
 
     // Toggle children on click.
     function click(d) {
-      console.log(d);
       if (d.children) {
           d._children = d.children;
           d.children = null;
@@ -121,32 +114,10 @@ $(document).ready(function() {
           d._children = null;
           update();
       } else {
-        console.log("hello")
-          // new Request.JSON({
-          //     url: '/echo/json/',
-          //     data: {
-          //         json: JSON.encode({
-          //             "children": [{
-          //                 "name": "x",
-          //                     "size": 1983
-          //             }, {
-          //                 "name": "y",
-          //                     "size": 2047
-          //             }, {
-          //                 "name": "z",
-          //                     "size": 1375
-          //             }, {
-          //                 "name": "t",
-          //                     "size": 1375
-          //             }]
-          //         }),
-          //         delay: 1
-          //     },
-          //     onSuccess: function (json) {
-          //         d.children = json.children;
-          //         update();
-          //     }
-          // }).send();
+        $.get('/children', {name: d.name}, function(data) {
+          d.children = data["children"]
+          update();
+        })
       }
     }
 
