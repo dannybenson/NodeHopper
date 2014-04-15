@@ -21,7 +21,7 @@ class Interest
 
 
   def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1)--(p2) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
     paths = paths.uniq.map {|path| path << paths.count(path) }
     paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
     Interest.with_children(paths)
