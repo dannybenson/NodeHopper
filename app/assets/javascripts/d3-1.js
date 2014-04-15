@@ -11,7 +11,6 @@ $("#prefetch").on("submit", function(event) {
   d3.select("#charts svg").remove();
   var input = { search: $("#search").val()};
   $.post("/search", input, function(result) {
-    console.log(result);
     root = result;
   }, "json").done(dataDriven);
 })
@@ -52,7 +51,7 @@ var path = svg.datum(root).selectAll("path")
       .on("mousemove", function(d) {return title.style("top", (event.pageY-10) + "px").style("left", (event.pageX+10)+ "px");})
       .on("mouseout", function(d) {return title.style("visibility", "hidden")});
 
-var transition = d3.transition()
+var transition = d3.select("#charts").transition()
   .delay(200)
   .duration(3000);
 
