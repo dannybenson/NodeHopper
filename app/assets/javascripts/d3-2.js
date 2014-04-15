@@ -1,124 +1,138 @@
 $(document).ready(function() {
+  var w = 1200,
+    h = 800,
+    node,
+    link,
+    i = 0,
+    json;
 
-          var w = 800,
-              h = 600,
-              node,
-              link,
-              root,
-              colorscale = d3.scale.category10();
+  var json;
 
-          var force = d3.layout.force()
-              .on("tick", tick)
-              .charge(function(d) { return d._children ? -d.size : -30; })
-              .linkDistance(function(d) { return d.target._children ? 300 : 30; })
-              .size([w, h]);
+  $("#d3_2").on("submit", function(event) {
+    event.preventDefault();
+    d3.select("#d3-2-chart svg").remove();
+    var input = { search: $("#d3_2 #search").val()};
+    $.post("/d3_2", input, function(result) {
+      json = result;
+    }, "json").done(d3_2);
+  })
+  var d3_2 = function() {
+    var force = d3.layout.force()
+      .charge(-1800)
+      .size([w, h]);
 
-          var vis = d3.select("#chart").append("svg")
-              .attr("width", w)
-              .attr("height", h);
+    var vis = d3.select("#d3-2-chart").append("svg")
+      .attr("width", w)
+      .attr("height", h);
+
+    update();
 
 
-            d3.json("/d3-2", function(json) {
-                root = json;
-                root.fixed = true;
-                root.x = w / 2;
-                root.y = h / 2;
-                update();
-              });
-          $.get('/d3-2', function(data){
-            // console.log(data)
+    function update() {
+      var nodes = flatten(json);
+          nodes = nodes.sort(function (a, b) {
+                    return a.id - b.id;
+                  });
+
+      var links = d3.layout.tree().links(nodes);
+
+      // Restart the force layout.
+      force.nodes(nodes)
+          .links(links)
+          .linkDistance(55)
+          .start();
+
+      var link = vis.selectAll(".link")
+          .data(links, function(d) { return d.target.id; });
+
+      link.enter().append("line")
+          .attr("class", "link");
+
+      link.exit().remove();
+
+      var node = vis.selectAll("g.node")
+          .data(nodes)
+
+
+      var groups = node.enter().append("g")
+          .attr("class", "node")
+          .attr("id", function (d) {
+          return d.id
+      })
+          .on('click', click)
+
+
+
+      groups.append("circle")
+          .attr("r", function(d) { return d.size * 5 || 15})
+          .style("fill", "#0196A7")
+
+
+      groups.append("text")
+          .attr("dx", 12)
+          .attr("dy", "0.35em")
+          .style("font-size", "10px")
+          .text(function (d) {
+          return d.name
+      });
+
+      node.exit().remove();
+
+      force.on("tick", function () {
+          link.attr("x1", function (d) {
+              return d.source.x;
           })
+              .attr("y1", function (d) {
+              return d.source.y;
+          })
+              .attr("x2", function (d) {
+              return d.target.x;
+          })
+              .attr("y2", function (d) {
+              return d.target.y;
+          });
 
-          function update() {
-            var nodes = flatten(root),
-                links = d3.layout.tree().links(nodes);
+          node.attr("transform", function (d) {
+              return "translate(" + d.x + "," + d.y + ")";
+          });
+      });
+    }
 
-            // Restart the force layout.
-            force
-                .nodes(nodes)
-                .links(links)
-                .start();
+    // Color leaf nodes orange, and packages white or blue.
+    function color(d) {
+      return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+    }
 
-            // Update the links…
-            link = vis.selectAll("line.link")
-                .data(links, function(d) { return d.target.id; });
+    // Toggle children on click.
+    function click(d) {
+      if (d.children) {
+          d._children = d.children;
+          d.children = null;
+          update();
+      } else if (d._children) {
+          d.children = d._children;
+          d._children = null;
+          update();
+      } else {
+        $.get('/children', {name: d.name}, function(data) {
+          d.children = data["children"]
+          update();
+        })
+      }
+    }
 
-            // Enter any new links.
-            link.enter().insert("line", ".node")
-                .attr("class", "link")
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
+    // Returns a list of all nodes under the json.
+    function flatten(json) {
+      var nodes = [];
 
-            // Exit any old links.
-            link.exit().remove();
+      function recurse(node) {
+          if(!node.id) node.id = ++i;
+          nodes.push(node);
+          if (node.children) node.children.forEach(recurse);
+      }
 
-            // Update the nodes…
-            node = vis.selectAll("circle.node")
-                .data(nodes, function(d) { return d.id; })
-                .style("fill", color);
-
-            node.transition()
-                .attr("r", function(d) { return d.children ? 4.5 : d.size; });
-
-            // Enter any new nodes.
-            node.enter().append("circle")
-                .attr("class", "node")
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; })
-                .attr("r", function(d) { return d.children ? 4.5 : d.size; })
-                .style("fill", color)
-                .on("click", click)
-                .call(force.drag);
-
-            node.append("title")
-                .text(function(d) { return d.name; });
-
-            // Exit any old nodes.
-            node.exit().remove();
-          }
-
-          function tick() {
-            link.attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-            node.attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-          }
-
-          // Color leaf nodes orange, and packages white or blue.
-          function color(d) {
-          //  return d._children ? "#3182bd" : d.children ?  : "#fd8d3c";
-            return d._children ? "#3182bd" : d.children ? "#c6dbef" : colorscale(d.size);
-          }
-
-          // Toggle children on click.
-          function click(d) {
-            if (d.children) {
-              d._children = d.children;
-              d.children = null;
-            } else {
-              d.children = d._children;
-              d._children = null;
-            }
-            update();
-          }
-
-          // Returns a list of all nodes under the root.
-          function flatten(root) {
-            var nodes = [], i = 0;
-
-            function recurse(node) {
-              if (node.children) node.size = node.children.reduce(function(p, v) { return p + recurse(v); }, 0);
-              if (!node.id) node.id = ++i;
-              nodes.push(node);
-              return node.size;
-            }
-
-            root.size = recurse(root);
-            return nodes;
-          }
+      recurse(json);
+      return nodes;
+    }
+  }
 })
