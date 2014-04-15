@@ -2,51 +2,22 @@
 require'neography'
 require'neo4j-cypher'
 class Interest
-
+	#tested
 	@@neo = ClientHelper.get_client
-
-  def self.get_interest_names(label = "Interest")
-    @@neo.execute_query("MATCH (n:Interest) RETURN n.name")['data'].inject(Array.new){ |array, name| array << {"name" => name.first}}
-  end
-
-  def self.find_or_create_by(label, name)
-    if @@neo.find_nodes_labeled(label, {:name => name}).empty?
-      node = @@neo.create_node("name" => name)
-      @@neo.add_label(node, ["Interest", label])
-      node
-    else
-      @@neo.find_nodes_labeled(label, {:name => name}).first
-    end
-  end
-
-
-  def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name LIMIT 10")['data']
-    paths = paths.uniq.map {|path| path << paths.count(path) }
-    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
-    Interest.with_children(paths)
-  end
-
-# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-def self.with_children(node)
-  if node[node.keys.first].keys.first.is_a?(Integer)
-    { "name" => node.keys.first,
-      "size" => 1 + node[node.keys.first].keys.first
-     }
-  else
-    { "name" => node.keys.first,
-      "children" => node[node.keys.first].collect { |c|
-        with_children(Hash[c[0], c[1]]) }
-    }
-  end
-end
-
-
-	attr_reader :id,:name,:category
+	attr_reader :name,:category
 
 	def initialize(args)
 		@category = args.fetch(:category)
 		@name = args.fetch(:name)
+	end
+
+	def in_database?
+		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
+		if @@neo.find_nodes_labeled("Interest",{:name => self.name}).first
+			true
+		else
+			false
+		end
 	end
 
 	def save
@@ -88,8 +59,48 @@ end
 		self
 	end
 
-	def self.weighted_recommendations(interest1,interest2,number)
-		recommendations = self.recommendations(interest1,interest2=nil)
+
+	#untested
+
+
+  def self.get_interest_names(label = "Interest")
+    @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
+  end
+
+  def self.find_or_create_by(label, name)
+    if @@neo.find_nodes_labeled(label, {:name => name}).empty?
+      node = @@neo.create_node("name" => name)
+      @@neo.add_label(node, ["Interest", label])
+      node
+    else
+      @@neo.find_nodes_labeled(label, {:name => name}).first
+    end
+  end
+
+
+  def self.node_matrix(interest, label="Interest")
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1)--(p2) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
+    paths = paths.uniq.map {|path| path << paths.count(path) }
+    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
+    Interest.with_children(paths)
+  end
+
+# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+	def self.with_children(node)
+	  if node[node.keys.first].keys.first.is_a?(Integer)
+	    { "name" => node.keys.first,
+	      "size" => 1 + node[node.keys.first].keys.first
+	     }
+	  else
+	    { "name" => node.keys.first,
+	      "children" => node[node.keys.first].collect { |c|
+	        with_children(Hash[c[0], c[1]]) }
+	    }
+	  end
+	end
+
+	def self.dual_weighted_recommendations(interest1,interest2,number)
+		recommendations = self.dual_recommendations(interest1,interest2)
     if recommendations
 	    results = []
 	    # titles = recommendations.map{|title| title[1]}
@@ -104,8 +115,24 @@ end
 	  end
   end
 
-  def self.percentage_recommendations(interest1,interest2,number)
-  	recommendations = self.weighted_recommendations(interest1,interest2,number)
+  	def self.weighted_recommendations(interest1,number)
+		recommendations = self.recommendations(interest1)
+    if recommendations
+	    results = []
+	    # titles = recommendations.map{|title| title[1]}
+	    unique = recommendations.uniq
+	    unique.each do |title|
+	      title << recommendations.count{|interest| interest[1] == title[1]}
+	      results << title
+	    end
+	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number-1]
+	  else
+	  	nil
+	  end
+  end
+
+  def self.dual_percentage_recommendations(interest1,interest2,number)
+  	recommendations = self.dual_weighted_recommendations(interest1,interest2,number)
   	if recommendations
 	    categories = recommendations.map{|interest| interest[0]}.uniq
 	    category_count = {}
@@ -124,13 +151,50 @@ end
 	  end
   end
 
+  def self.percentage_recommendations(interest1,number)
+  	recommendations = self.weighted_recommendations(interest1,number)
+  	if recommendations
+	    categories = recommendations.map{|interest| interest[0]}.uniq 
+	    category_count = {}
+	    categories.each do |category|
+		    count = 0
+		    recommendations.each do |interest| 
+	      	if interest[0] == category
+	      		count+=interest[2]
+	      	end
+	    	end
+	    	category_count[category] = count
+	    end
+	    return recommendations.map{|interest| [interest[0],interest[1],interest[2].to_f/category_count[interest[0]].to_f]}
+	  else
+	  	nil
+	  end
+  end
 
 
 
 
+ def self.donut(interest1,number)
+  	input = self.percentage_recommendations(interest1,number)
+  	if input
+	  	results = {'title' => '', 'children' => []}
+	  	categories = input.map(&:first).uniq
+	  	categories.each do |category|
+	  		category_recs = input.select {|recommendation| recommendation.first == category }
+	  		children = []
+	  		category_recs.each do |c, title, freq|
+	  			children << {"title" => title, "data" => freq}
+	  		end
+	  		results['children'] << {'title' => category, 'children' => children}
+	  	end
+	  	results
+	  else
+	  	nil
+	  end
+  end
 
-  def self.donut(interest1,interest2,number)
-  	input = self.percentage_recommendations(interest1,interest2,number)
+  def self.dual_donut(interest1,interest2,number)
+  	input = self.dual_percentage_recommendations(interest1,interest2,number)
   	if input
 	  	results = {'title' => '', 'children' => []}
 	  	categories = input.map(&:first).uniq
@@ -159,15 +223,12 @@ end
 		end
 	end
 
-	def self.recommendations(interest1,interest2=nil)
-		if interest2
-			result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name
+	def self.dual_recommendations(interest1,interest2)
+		
+		result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name
 																	UNION ALL
 																	MATCH (interest {name:'"+ interest2.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-			result.reject!{|interest| interest[1]==interest1.name || interest[1]==interest2.name}
-		else
-			result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-		end
+		result.reject!{|interest| interest[1]==interest1.name || interest[1]==interest2.name}
 		if result[0]
 			return result
 		else
@@ -175,18 +236,13 @@ end
 		end
 	end
 
-
-
-	def in_database?
-		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
-		if @@neo.find_nodes_labeled("Interest",{:name => self.name}).first
-			true
+	def self.recommendations(interest1)
+		result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+		if result[0]
+			return result
 		else
-			false
+			return nil
 		end
 	end
-
-
-
 end
 
