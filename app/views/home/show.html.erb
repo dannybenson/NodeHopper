@@ -134,91 +134,51 @@
     </div>
   </div>
   <!-- /END SECTION HEADER -->
-
-
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div id="d3_2">
+            <%= form_tag("/search", method: "get", class: "form-inline") do %>
+              <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+              <%= submit_tag "Search", class: "btn btn-default" %>
+            <% end %>
+          </div>
+    </div>
+  </div>
   <div class="row">
 
 
-    <div class="col-md-9 col-sm-9">
-      <div class="wow animated" data-wow-offset="120" data-wow-duration="1.5s">
-        <div id="chart"></div>
+    <div class="col-md-12 col-sm-12 col-lg-12">
 
 
-          <script>
+        <div id="d3-2-chart"></div>
 
-
-          </script>
-      </div>
     </div>
 
     <!-- FEATURES RIGHT -->
-    <div class="col-md-3 col-sm-3 features-right wow fadeInRight animated" data-wow-offset="10" data-wow-duration="1.5s">
+    <!-- <div class="col-md-3 col-sm-3 features-right wow fadeInRight animated" data-wow-offset="10" data-wow-duration="1.5s"> -->
 
       <!-- FEATURE -->
-      <div class="feature">
+      <!-- <div class="feature"> -->
 
         <!-- ICON -->
-        <div class="icon-container">
+        <!-- <div class="icon-container">
           <div class="icon">
             <i class="icon_genius"></i>
           </div>
-        </div>
+        </div> -->
 
         <!-- FEATURE HEADING AND DESCRIPTION -->
-        <div class="fetaure-details">
+        <!-- <div class="fetaure-details">
           <h4 class="main-color">See How Your Interests Connect</h4>
           <p>
              Lorem ipsum dolor sit amet, ed do eiusmod tempor incididunt ut labore et dolore magna.
           </p>
         </div>
 
-      </div>
+      </div> -->
       <!-- /END SINGLE FEATURE -->
 
-      <!-- FEATURE -->
-      <div class="feature">
-
-        <!-- ICON -->
-        <div class="icon-container">
-          <div class="icon">
-            <i class="icon_lightbulb_alt"></i>
-          </div>
-        </div>
-
-        <!-- FEATURE HEADING AND DESCRIPTION -->
-        <div class="fetaure-details">
-          <h4 class="main-color">Interests Are Connected By User Popularity</h4>
-          <p>
-             Lorem ipsum dolor sit amet, ed do eiusmod tempor incididunt ut labore et dolore magna.
-          </p>
-        </div>
-
-      </div>
-
-      <!-- /END SINGLE FEATURE -->
-
-      <!-- FEATURE -->
-      <div class="feature">
-
-        <!-- ICON -->
-        <div class="icon-container">
-          <div class="icon">
-            <i class="icon_ribbon_alt"></i>
-          </div>
-        </div>
-
-        <!-- FEATURE HEADING AND DESCRIPTION -->
-        <div class="fetaure-details">
-          <h4 class="main-color">Completely Interactive</h4>
-          <p>
-             Lorem ipsum dolor sit amet, ed do eiusmod tempor incididunt ut labore et dolore magna.
-          </p>
-        </div>
-
-      </div>
-      <!-- /END SINGLE FEATURE -->
-
-    </div>
+    <!-- </div> -->
     <!-- /END FEATURES RIGHT -->
 
   </div>
@@ -234,7 +194,7 @@
 <!-- =========================
      BRIEF LEFT SECTION
 ============================== -->
-<!-- <!-- <section class="app-brief grey-bg" id="brief1">
+<section class="app-brief grey-bg" id="brief1">
 
 <div class="container">
 
@@ -269,7 +229,7 @@
       </ul>
 
     </div>
-    <!-- /END RIGHT BRIEF --> --> -->
+    <!-- /END RIGHT BRIEF -->
 
   </div>
   <!-- /END ROW -->

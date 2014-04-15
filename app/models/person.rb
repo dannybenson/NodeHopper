@@ -7,8 +7,10 @@ class Person
 	end
 
 	def save
-		person = @@neo.create_node("user_id_hash" => self.user_id_hash) unless self.in_database?
-		@@neo.add_label(person, "Person")
+		unless self.in_database?
+			person = @@neo.create_node("user_id_hash" => self.user_id_hash)
+			@@neo.add_label(person, "Person")
+		end
 		self
 	end
 
@@ -84,6 +86,13 @@ class Person
 	# 		return nil
 	# 	end
 	# end
+
+	def <<(interest)
+		interest = @@neo.find_nodes_labeled("Interest", {:name => interest.name}).first
+		person = @@neo.find_nodes_labeled("Person", {:user_id_hash => self.user_id_hash}).first
+		@@neo.create_relationship("like",person, interest)
+		self
+	end
 
 	def in_database?
 		query = "MATCH (person {user_id_hash:'"+self.user_id_hash.to_s+"'}) RETURN person.user_id_hash"
