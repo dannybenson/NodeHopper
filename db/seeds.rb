@@ -7,7 +7,9 @@ json = json | JSON.parse(File.read('db/gs.json'))
 json = json | JSON.parse(File.read('db/ka.json'))
 json = json | JSON.parse(File.read('db/ss.json'))
 
+
 require 'json'
+
 
 
 # reject users without likes
