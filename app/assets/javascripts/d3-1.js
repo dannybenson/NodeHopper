@@ -11,7 +11,6 @@ $("#prefetch").on("submit", function(event) {
   d3.select("#charts svg").remove();
   var input = { search: $("#search").val()};
   $.post("/search", input, function(result) {
-    console.log(result);
     root = result;
   }, "json").done(dataDriven);
 })
@@ -57,7 +56,8 @@ var path = svg.datum(root).selectAll("g")
     .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
     .text(function(d) {if (d.title.length > 11) {return d.title.split(" ")[1];} else{ return d.title;}})
 
-var transition = d3.transition()
+var transition = d3.select("#charts").transition()
+
   .delay(200)
   .duration(3000);
 
