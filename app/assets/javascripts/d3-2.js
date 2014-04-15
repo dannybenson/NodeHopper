@@ -26,7 +26,7 @@ $(document).ready(function() {
                 update();
               });
           $.get('/d3-2', function(data){
-            console.log(data)
+            // console.log(data)
           })
 
           function update() {

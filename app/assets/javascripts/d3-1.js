@@ -5,13 +5,15 @@ var h = 500;
 var r = Math.min(w,h)/2;
 var color = d3.scale.category20c();
 var root = {};
+var colorStore = [];
 
 $("#prefetch").on("submit", function(event) {
   event.preventDefault();
   d3.select("#charts svg").remove();
+  d3.selectAll("#legend tr").remove();
+  colorStore = [];
   var input = { search: $("#search").val()};
   $.post("/search", input, function(result) {
-    console.log(result);
     root = result;
   }, "json").done(dataDriven);
 })
@@ -46,16 +48,12 @@ var path = svg.datum(root).selectAll("g")
       .attr("class", function(d) {if (d.data) {return d.title + ","+ d.data} else { return d.title}})
       .attr("d", arc)
       .attr("display", function(d) {return d.depth ? null : "none" ;})
-      .attr("fill", function(d) {return color((d.children ? d : d.parent).title);})
+      .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
       .style("stroke", "#fff")
       .on("mouseover", function(d) {return title.text(this.className.animVal).style("visibility","visible");})
       .on("mousemove", function(d) {return title.style("top", (event.pageY-10) + "px").style("left", (event.pageX+10)+ "px");})
       .on("mouseout", function(d) {return title.style("visibility", "hidden")});
 
-  path.append("text")
-    .attr("class", "text")
-    .attr("transform", function(d) {return "translate(" + arc.centroid(d) + ")"; })
-    .text(function(d) {if (d.title.length > 11) {return d.title.split(" ")[1];} else{ return d.title;}})
 
 var transition = d3.transition()
   .delay(200)
@@ -66,6 +64,26 @@ transition.each(function() {
     .style("opacity", 1)
     .remove;
   })
+
+colorStore.shift(1)
+
+var legend = d3.select("#legend").selectAll("tr").data(colorStore)
+    .enter().append("tr");
+
+  legend.selectAll("td")
+    .data(function(d) {return [d3.values(d)[0]]})
+    .enter().append("td")
+    .text(function(d){return d});
+
+  legend.selectAll("td")
+    .data(function(d) {return d3.values(d)})
+    .enter().append("td")
+    .style("background-color", function(d) {return d;})
+    .attr("width", "20px")
+    .attr("hegith", "5px");
+
 }
+
+
 
 })
