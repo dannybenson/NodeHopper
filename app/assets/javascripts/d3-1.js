@@ -12,10 +12,11 @@ $("#d3_1").on("submit", function(event) {
   d3.select("#charts svg").remove();
   d3.selectAll("#legend tr").remove();
   colorStore = [];
-  var input = { search: $("#d3_1_search").val()};
-  $.post("/search", input, function(result) {
-    root = result;
-  }, "json").done(dataDriven);
+  $("multi_search li").each()
+
+  // $.post("/search", input, function(result) {
+  //   root = result;
+  // }, "json").done(dataDriven);
 })
 
 var dataDriven = function() {

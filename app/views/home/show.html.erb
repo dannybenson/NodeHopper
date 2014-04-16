@@ -104,13 +104,107 @@
   </div>
   <!-- /END SECTION HEADER -->
   <div class="row">
-    <div class="col-md-12 col-sm-12">
+    <div class="col-md-4 col-md-offset-4">
      <div id="d3_1">
       <%= form_tag("/search", method: "get", class: "form-inline") do %>
+      <ul id="multi_search">
+      </ul>
         <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
         <%= submit_tag "Search", class: "btn btn-default" %>
       <% end %>
     </div>
+    <script>
+      $(function() {
+
+          function TodoController() {
+            this.index = 0
+          }
+
+          TodoController.prototype = {
+            bindEvents : function() {
+              $("form").submit(this.create.bind(this));
+              $("#multi_search").on("click", this.delete.bind(this))
+              $("#items").on("keyup", this.update.bind(this));
+            },
+            create: function(key) {
+              event.preventDefault();
+              if ($('#d3_1_search').val() != "") {
+                var todo = new Todo($('#d3_1_search').val(), this.index)
+                this.index++
+                $('#d3_1_search').val("")
+                TodoList.add(todo)
+              }
+            },
+            update: function(key){
+              event.preventDefault();
+              if(key.keyCode == 13 || key.keyCode == 9) {
+                var index = $(key.target).parent().find(".index").text()
+                var text = $(key.target).val()
+                TodoList.update(index, text)
+              }
+            },
+            delete: function(key){
+              if ($(key.target).hasClass("delete"))  {
+                TodoList.delete($(key.target).next().text())
+              }
+            }
+          }
+
+          var TodoView =  {
+            update: function(todos) {
+              $('#multi_search li').remove();
+              todos.forEach(function(todo) {
+                $('#multi_search').append('<li style="background-color:' + todo.color + '"><input  class="form-control" value="' + todo.text + '"><span class="delete">&times;</span><span class="index">' + todo.index + '</span></li>')
+              })
+            }
+          }
+
+          function Todo(text, index) {
+            this.text = text;
+            this.index = index;
+            this.complete = false;
+            this.color = "#6BAED6";
+          }
+
+          Todo.prototype = {
+            finish : function() {
+              this.complete = true;
+            },
+            unfinish : function() {
+              this.complete = false;
+            }
+          }
+
+          var TodoList = {
+            limit : 3,
+            todos : [],
+            add   : function(todo) {
+              if (this.todos.length < 3) {
+              this.todos.push(todo)
+              TodoView.update(this.todos)
+            }
+            },
+            update : function(index,text) {
+              this.todos = _.map(this.todos, function(todo){ if (todo.index == index) {
+                                                                    todo.text = text
+                                                                    return todo
+                                                                  } else {
+                                                                    return todo
+                                                                  }
+            });
+              TodoView.update(this.todos)
+            },
+            delete : function(index) {
+              this.todos = _.reject(this.todos, function(todo){ return todo.index == index; })
+              TodoView.update(this.todos)
+            }
+          }
+
+          var controller = new TodoController();
+          controller.bindEvents();
+
+        })
+    </script>
   </div>
    <div class="col-md-12 col-sm-12 col-lg-12">
        <table>
@@ -148,11 +242,11 @@
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
 
     <!-- SECTION TITLE -->
-    <h2 class="dark-text">Interactive Force Layout</h2>
+    <h2 class="dark-text">Explore</h2>
     <div class="colored-line">
     </div>
     <div class="section-description">
-      Lorem ipsum dolor kadr
+      Interactive Force Layout
     </div>
     <div class="colored-line">
     </div>
