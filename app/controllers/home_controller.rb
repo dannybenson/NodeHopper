@@ -54,6 +54,7 @@ class HomeController < ApplicationController
                        {:sets => [1,2,3], :size =>0},
                        {:sets => [0,1,2,3], :size =>0}
                        ]}
+  end
 
   def top
     interests = params[:list].map{|name| Interest.find(name)}
