@@ -4,16 +4,16 @@ COLOR : BLUE MUNSELL
 
 MAIN COLOR CODE: #0196a7
 
-DEEP COLOR CODE: #006f7c
+DEEP COLOR CODE: #6BAED6
 =========================================
 ----------------------------------------- */
 
 .solid-color {
-    background: rgba(1, 150, 167, 1);
+    background: #6BAED6;
 }
 
 .standard-button {
-    background: #006f7c;
+    background: #6BAED6;
 }
 
 .standard-button2 {
@@ -21,14 +21,14 @@ DEEP COLOR CODE: #006f7c
 }
 
 .standard-button2:hover {
-    background: #006f7c;
+    background: #6BAED6;
 }
 
-.btn-primary:focus, 
-.btn-primary:active, 
-.btn-primary.active, 
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
 .open .dropdown-toggle.btn-primary {
-    background: #006f7c;
+    background: #6BAED6;
     border-color: inherit;
 }
 
