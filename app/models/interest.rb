@@ -225,21 +225,19 @@ class Interest
 	def self.venn(interest_array)
 		interest_names=interest_array.map{|interest| interest.name}
 		# p interest_names
-		interest_hashes = interest_array.map{|interest| {"name"=>interest.name,"recommendations"=>interest.weighted_recommendations}}
+		interest_hashes = interest_array.map{|interest| {"name"=>interest.name,"recommendations"=>interest.recommendations.uniq}}
 		# p interest_hashes
 		output = {"set"=>[],"overlap"=>[]}
 		# p interest_hashes[0]['recommendations'][0]
+		#part 1
 		interest_hashes.each do |interest|
 			interest_names.each do |name|
 				interest['recommendations'].reject! do |recommendation|
 					name == recommendation[1]
 				end
 			end
-			count = 0
-			interest['recommendations'].each do |suggestion|
-				count+=suggestion[2]
-			end
-			output['set'] << {'label'=>interest['name'] ,'size'=> count}
+			
+			output['set'] << {'label'=>interest['name'] ,'size'=> interest['recommendations'].length}
 		end
 		#part 2
 		indices = (0...interest_hashes.length).to_a
