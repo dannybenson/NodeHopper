@@ -12,7 +12,7 @@ $("#d3_1").on("submit", function(event) {
   d3.select("#charts svg").remove();
   d3.selectAll("#legend tr").remove();
   colorStore = [];
-  $("multi_search li").each()
+  console.log($("multi_search li").find("input").val())
 
   // $.post("/search", input, function(result) {
   //   root = result;
