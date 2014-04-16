@@ -40,20 +40,8 @@ class HomeController < ApplicationController
   end
 
   def d3_3
-   render json:   { :set => [{:label => 'SE', :size => 28}, {:label => 'Treat', :size => 35},
-                   {:label => 'Anti-CCP', :size  => 108}, {:label => 'DAS28', :size =>106}],
-                   :overlaps => [{:sets => [0,1], :size =>1},
-                       {:sets => [0,2], :size =>1},
-                       {:sets => [0,3], :size =>14},
-                       {:sets => [1,2], :size =>6},
-                       {:sets => [1,3], :size =>0},
-                       {:sets => [2,3], :size =>1},
-                       {:sets => [0,2,3], :size =>1},
-                       {:sets => [0,1,2], :size =>0},
-                       {:sets => [0,1,3], :size =>0},
-                       {:sets => [1,2,3], :size =>0},
-                       {:sets => [0,1,2,3], :size =>0}
-                       ]}
+    interests = params[:list].map{|name| Interest.find(name)}
+   render json:   Interest.venn(interests)
   end
 
 end
