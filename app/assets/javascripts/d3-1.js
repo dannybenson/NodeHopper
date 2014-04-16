@@ -9,7 +9,7 @@ $(document).ready(function() {
       bindEvents : function() {
         $("#d3_1 form").submit(this.create.bind(this));
         $("#multi_search").on("click", this.delete.bind(this))
-        $("#items").on("keyup", this.update.bind(this));
+        $("#multi_search li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();
@@ -91,7 +91,7 @@ $(document).ready(function() {
     controller.bindEvents();
 
   //d3 portion
-  var w = 500;
+  var w = 550;
   var h = 500;
   var r = Math.min(w,h)/2;
   var color = d3.scale.category20c();
