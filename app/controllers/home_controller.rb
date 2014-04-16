@@ -15,10 +15,11 @@ class HomeController < ApplicationController
 
   def show
     # {"interests" : ["sfwef", "lsdf"]}
+    # ["Batman Begins", "The Notebook"] => make into interest objects
     # interests = params[:interests].map{|thing| Interest.find(thing)}
     # render json: {some: "stuff"}
     # render json: Interest.combined_donut(interests)
-    binding.pry
+    # binding.pry
  		render json: Interest.donut(Interest.find("Batman Begins"),20)
  	end
 

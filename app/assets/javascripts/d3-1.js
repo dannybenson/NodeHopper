@@ -105,10 +105,10 @@ $(document).ready(function() {
   //   colorStore = [];
 
   var updateSearch = function(todos) {
-    console.log(todos[0]["text"])
-    // $.post("/search", {"list" : todos}, function(result) {
-    //   root = result;
-    // }, "json").done(dataDriven);
+    todos = _.map(todos, function(todo){ return todo["text"]})
+    $.post("/search", {"list" : todos}, function(result) {
+      root = result;
+    }, "json").done(dataDriven);
   }
 
   var dataDriven = function() {
