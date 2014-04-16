@@ -98,13 +98,11 @@ $(document).ready(function() {
   var root = {};
   var colorStore = [];
 
-  // $("#d3_1").on("submit", function(event) {
-  //   event.preventDefault();
-  //   d3.select("#charts svg").remove();
-  //   d3.selectAll("#legend tr").remove();
-  //   colorStore = [];
 
   var updateSearch = function(todos) {
+    d3.select("#charts svg").remove();
+    d3.selectAll("#legend tr").remove();
+    colorStore = [];
     todos = _.map(todos, function(todo){ return todo["text"]})
     $.post("/search", {"list" : todos}, function(result) {
       root = result;
@@ -138,7 +136,7 @@ $(document).ready(function() {
       .enter().append("g")
 
       path.append("path")
-        .attr("class", function(d) {if (d.data) {return d.title + ","+ d.data + "%"} else { return d.title}})
+        .attr("class", function(d) {if (d.data) {return d.title + ","+ Math.floor(d.data * 100) + "%"} else { return d.title}})
         .attr("d", arc)
         .attr("display", function(d) {return d.depth ? null : "none" ;})
         .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
