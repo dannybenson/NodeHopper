@@ -11,6 +11,7 @@ TeamKen::Application.routes.draw do
   post '/search' => 'home#show'
   get '/node' => "home#node"
   get '/children' => "home#children"
+  post '/d3_3' => 'home#d3_3'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
