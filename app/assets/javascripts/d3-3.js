@@ -1,12 +1,13 @@
 (function(venn) {
+    "use strict";
     /** given a list of set objects, and their corresponding overlaps.
     updates the (x, y, radius) attribute on each set such that their positions
     roughly correspond to the desired overlaps */
-    venn.venn = function(sets, overlaps) {
-        parameters = {};
-        parameters.maxIterations = 500;
-        var lossFunction = venn.lossFunction;
-        var initialLayout = venn.greedyLayout;
+    venn.venn = function(sets, overlaps, parameters) {
+        parameters = parameters || {};
+        parameters.maxIterations = parameters.maxIterations || 500;
+        var lossFunction = parameters.lossFunction || venn.lossFunction;
+        var initialLayout = parameters.layoutFunction || venn.greedyLayout;
 
         // initial layout is done greedily
         sets = initialLayout(sets, overlaps);
@@ -154,6 +155,10 @@
                 overlap = setOverlaps[setIndex].filter(isPositioned);
             overlap.sort(sortOrder);
 
+            if (overlap.length === 0) {
+                throw "Need overlap information for set " + JSON.stringify( set );
+            }
+
             var points = [];
             for (var j = 0; j < overlap.length; ++j) {
                 // get appropriate distance from most overlapped already added set
@@ -201,6 +206,22 @@
         return sets;
     };
 
+    /// Uses multidimensional scaling to approximate a first layout here
+    venn.classicMDSLayout = function(sets, overlaps) {
+        // get the distance matrix
+        var distances = venn.getDistanceMatrix(sets, overlaps);
+
+        // get positions for each set
+        var positions = mds.classic(distances);
+
+        // translate back to (x,y,radius) coordinates
+        for (var i = 0; i < sets.length; ++i) {
+            sets[i].x = positions[i][0];
+            sets[i].y = positions[i][1];
+            sets[i].radius = Math.sqrt(sets[i].size / Math.PI);
+        }
+        return sets;
+    };
 
     /** Given a bunch of sets, and the desired overlaps between these sets - computes
     the distance from the actual overlaps to the desired overlaps. Note that
@@ -306,10 +327,10 @@
 
     /** finds the zeros of a function, given two starting points (which must
      * have opposite signs */
-    venn.bisect = function(f, a, b) {
-        parameters = {};
-        var maxIterations = 100,
-            tolerance =  1e-10,
+    venn.bisect = function(f, a, b, parameters) {
+        parameters = parameters || {};
+        var maxIterations = parameters.maxIterations || 100,
+            tolerance = parameters.tolerance || 1e-10,
             fA = f(a),
             fB = f(b),
             delta = b - a;
@@ -338,12 +359,18 @@
     }
 
     /** minimizes a function using the downhill simplex method */
-    venn.fmin = function(f, x0) {
-        parameters = {};
+    venn.fmin = function(f, x0, parameters) {
+        parameters = parameters || {};
 
-        var maxIterations = x0.length * 200,     nonZeroDelta =  1.1,
-        zeroDelta = 0.001,     minErrorDelta = 1e-5,     rho = 1,     chi = 2,
-        psi = -0.5,     sigma = 0.5, callback = parameters.callback;
+        var maxIterations = parameters.maxIterations || x0.length * 200,
+            nonZeroDelta = parameters.nonZeroDelta || 1.1,
+            zeroDelta = parameters.zeroDelta || 0.001,
+            minErrorDelta = parameters.minErrorDelta || 1e-5,
+            rho = parameters.rho || 1,
+            chi = parameters.chi || 2,
+            psi = parameters.psi || -0.5,
+            sigma = parameters.sigma || 0.5,
+            callback = parameters.callback;
 
         // initialize simplex.
         var N = x0.length,
@@ -440,14 +467,21 @@
                 solution : simplex[0]};
     };
 
-    venn.drawD3Diagram = function(dataset, width, height) {
+    venn.drawD3Diagram = function(dataset, width, height, parameters) {
+        parameters = parameters || {};
 
-        var colours = d3.scale.category20(),
-            nodeOpacity = 0.3,
-            padding = 6;
+        var colours = d3.scale.category10(),
+            circleFillColours = parameters.circleFillColours || colours,
+            circleStrokeColours = parameters.circleStrokeColours || circleFillColours,
+            circleStrokeWidth = parameters.circleStrokeWidth || function(i) { return 0; },
+            textFillColours = parameters.textFillColours || colours,
+            textStrokeColours = parameters.textStrokeColours || textFillColours,
+            nodeOpacity = 0.4,
+            padding = parameters.padding || 6;
 
         dataset = venn.scaleSolution(dataset, width, height, padding);
-        var svg = d3.select("#chart-3").append("svg")
+        var svg = d3.select("#charts").append("svg")
+                .attr("class", "venn")
                 .attr("width", width)
                 .attr("height", height);
 
@@ -463,29 +497,34 @@
                .style("fill-opacity", nodeOpacity)
                .attr("cx", function(d) { return d.x; })
                .attr("cy", function(d) { return d.y; })
-               .style("stroke", function(d, i) { return colours(i); })
-               .style("stroke-width", function(d, i) { return 2; })
-               .style("fill", function(d, i) { return colours(i); });
+               .style("stroke", function(d, i) { return circleStrokeColours(i); })
+               .style("stroke-width", function(d, i) { return circleStrokeWidth(i); })
+               .style("fill", function(d, i) { return circleFillColours(i); });
 
         var text = nodes.append("text")
                .attr("x", function(d) { return d.x; })
                .attr("y", function(d) { return d.y; })
                .attr("text-anchor", "middle")
                .attr("dy", "0.35em")
-               .style("stroke", function(d, i) { return colours(i); })
-               .style("fill", function(d, i) { return colours(i); })
+               .style("stroke", function(d, i) { return textStrokeColours(i); })
+               .style("fill", function(d, i) { return textFillColours(i); })
                .text(function(d) { return d.label; });
 
         centerVennDiagram( diagram, width, height, padding );
+
+        d3.select("#charts svg").selectAll("g").transition().delay(20).duration(1000)
+            .style("opacity", 1)
+            .remove;
 
         return {'svg' : svg,
                 'nodes' : nodes,
                 'circles' : circles,
                 'text' : text };
     };
+
 }(window.venn = window.venn || {}));
 (function(circleIntersection) {
-
+    "use strict";
     var SMALL = 1e-10;
 
     /** Returns the intersection area of a bunch of circles (where each circle
