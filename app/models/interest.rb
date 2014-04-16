@@ -100,8 +100,10 @@ class Interest
 	  end
 	end
 
-	def self.dual_weighted_recommendations(interest1,interest2,number)
-		recommendations = self.dual_recommendations(interest1,interest2)
+
+
+  	def self.combined_weighted_recommendations(interest_array)
+		recommendations = self.combined_recommendations(interest_array)
     if recommendations
 	    results = []
 	    # titles = recommendations.map{|title| title[1]}
@@ -110,50 +112,14 @@ class Interest
 	      title << recommendations.count{|interest| interest[1] == title[1]}
 	      results << title
 	    end
-	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number-1]
+	    return results.sort{ |a,b| b[2] <=> a[2]}[0..19]
 	  else
 	  	nil
 	  end
   end
 
-  	def self.weighted_recommendations(interest1,number)
-		recommendations = self.recommendations(interest1)
-    if recommendations
-	    results = []
-	    # titles = recommendations.map{|title| title[1]}
-	    unique = recommendations.uniq
-	    unique.each do |title|
-	      title << recommendations.count{|interest| interest[1] == title[1]}
-	      results << title
-	    end
-	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number-1]
-	  else
-	  	nil
-	  end
-  end
-
-  def self.dual_percentage_recommendations(interest1,interest2,number)
-  	recommendations = self.dual_weighted_recommendations(interest1,interest2,number)
-  	if recommendations
-	    categories = recommendations.map{|interest| interest[0]}.uniq
-	    category_count = {}
-	    categories.each do |category|
-		    count = 0
-		    recommendations.each do |interest|
-	      	if interest[0] == category
-	      		count+=interest[2]
-	      	end
-	    	end
-	    	category_count[category] = count
-	    end
-	    return recommendations.map{|interest| [interest[0],interest[1],interest[2].to_f/category_count[interest[0]].to_f]}
-	  else
-	  	nil
-	  end
-  end
-
-  def self.percentage_recommendations(interest1,number)
-  	recommendations = self.weighted_recommendations(interest1,number)
+  def self.combined_percentage_recommendations(interest_array)
+  	recommendations = self.combined_weighted_recommendations(interest_array)
   	if recommendations
 	    categories = recommendations.map{|interest| interest[0]}.uniq
 	    category_count = {}
@@ -175,27 +141,13 @@ class Interest
 
 
 
- def self.donut(interest1,number)
-  	input = self.percentage_recommendations(interest1,number)
-  	if input
-	  	results = {'title' => '', 'children' => []}
-	  	categories = input.map(&:first).uniq
-	  	categories.each do |category|
-	  		category_recs = input.select {|recommendation| recommendation.first == category }
-	  		children = []
-	  		category_recs.each do |c, title, freq|
-	  			children << {"title" => title, "data" => freq}
-	  		end
-	  		results['children'] << {'title' => category, 'children' => children}
-	  	end
-	  	results
-	  else
-	  	nil
-	  end
-  end
 
-  def self.dual_donut(interest1,interest2,number)
-  	input = self.dual_percentage_recommendations(interest1,interest2,number)
+
+
+
+
+  def self.combined_donut(interest_array)
+  	input = self.combined_percentage_recommendations(interest_array)
   	if input
 	  	results = {'title' => '', 'children' => []}
 	  	categories = input.map(&:first).uniq
@@ -224,12 +176,28 @@ class Interest
 		end
 	end
 
-	def self.dual_recommendations(interest1,interest2)
 
-		result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name
-																	UNION ALL
-																	MATCH (interest {name:'"+ interest2.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-		result.reject!{|interest| interest[1]==interest1.name || interest[1]==interest2.name}
+	def weighted_recommendations
+		recommendations = self.recommendations
+    if recommendations
+	    results = []
+	    unique = recommendations.uniq
+	    unique.each do |title|
+	      title << recommendations.count{|interest| interest[1] == title[1]}
+	      results << title
+	    end
+	    return results.sort{ |a,b| b[2] <=> a[2]}
+	  else
+	  	nil
+	  end
+	end
+
+
+
+	def self.combined_recommendations(interest_array)
+		interests = interest_array.map{|interest| interest.name}
+		result = interest_array.map{|interest| interest.recommendations}
+		result.flatten!(1).reject!{|recommendation| interests.include?(recommendation[1])}
 		if result[0]
 			return result
 		else
@@ -237,13 +205,50 @@ class Interest
 		end
 	end
 
-	def self.recommendations(interest1)
-		result = @@neo.execute_query("MATCH (interest {name:'"+ interest1.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-		if result[0]
-			return result
-		else
-			return nil
+
+
+
+
+
+
+
+
+
+
+# var root = { "set": [{label : 'SE', size : 28}, {label : 'Treat', size: 35}, {label : 'snow', size: 20}],
+#     "overlap": [{sets : [0,1], size:2},
+#           {sets :  [0,2], size:3},
+#           {sets : [1,2], size: 10},
+#           {sets : [0,1,2], size: 10}
+#                        ]};
+
+	def self.venn(interest_array)
+		interest_names=interest_array.map{|interest| interest.name}
+		# p interest_names
+		interest_hashes = interest_array.map{|interest| {"name"=>interest.name,"recommendations"=>interest.weighted_recommendations}}
+		# p interest_hashes
+		output = {"set"=>[],"overlap"=>[]}
+		# p interest_hashes[0]['recommendations'][0]
+		interest_hashes.each do |interest|
+			interest_names.each do |name|
+				interest['recommendations'].reject! do |recommendation|
+					name == recommendation[1]
+				end
+			end
+			count = 0
+			interest['recommendations'].each do |suggestion|
+				count+=suggestion[2]	
+			end
+			output['set'] << {'label'=>interest['name'] ,'size'=> count} 
 		end
-	end
+		#part 2
+		return output
+	end	
 end
+
+
+
+
+
+
 
