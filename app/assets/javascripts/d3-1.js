@@ -106,7 +106,11 @@ $(document).ready(function() {
     todos = _.map(todos, function(todo){ return todo["text"]})
     $.post("/search", {"list" : todos}, function(result) {
       root = result;
+      console.log(result);
     }, "json").done(dataDriven);
+    $.post("/top", {"list" : todos}, function(result) {
+      console.log(_.map(result, function(res) { return res[0] + res[1] + res[2]}))
+    })
   }
 
   var dataDriven = function() {
@@ -136,7 +140,7 @@ $(document).ready(function() {
       .enter().append("g")
 
       path.append("path")
-        .attr("class", function(d) {if (d.data) {return d.title + ","+ Math.floor(d.data * 100) + "%"} else { return d.title}})
+        .attr("class", function(d) {if (d.data) {return d.title + " "+ Math.floor(d.data * 100) + "%"} else { return d.title}})
         .attr("d", arc)
         .attr("display", function(d) {return d.depth ? null : "none" ;})
         .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
@@ -148,8 +152,8 @@ $(document).ready(function() {
 
   var transition = d3.select("#charts").transition()
 
-    .delay(200)
-    .duration(3000);
+    .delay(0)
+    .duration(2000);
 
   transition.each(function() {
       d3.selectAll("g").transition()

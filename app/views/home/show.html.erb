@@ -105,29 +105,35 @@
   <!-- /END SECTION HEADER -->
   <div class="row">
     <div class="col-md-4 col-md-offset-4">
-     <div id="d3_1">
-      <%= form_tag("/search", method: "get", class: "form-inline") do %>
-      <ul id="multi_search">
-      </ul>
-        <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
-        <%= submit_tag "Search", class: "btn btn-default" %>
-      <% end %>
+      <div id="d3_1">
+        <%= form_tag("/search", method: "get", class: "form-inline") do %>
+          <ul id="multi_search">
+          </ul>
+          <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+          <%= submit_tag "Search", class: "btn btn-default" %>
+        <% end %>
+      </div>
     </div>
   </div>
-   <div class="col-md-12 col-sm-12 col-lg-12">
-       <table>
+  <div class="row">
+  <div class="col-md-4 col-sm-4 col-lg-4">
+    <h3>Your Top Recommendations</h3>
+    <ul>
+      <li>seomthimgs</li>
+    </ul>
+  </div>
+   <div class="col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-md-2 col-sm-2 col-lg-2">
+       <table class="color-legend table">
               <thead>
                 <tr>
-                  <th>Category</th>
-                  <th>Color</th>
                 </tr>
               </thead>
               <tbody id="legend"></tbody>
             </table>
-
-          <div id="charts"></div>
-
     </div>
+    <div class="col-sm-offset-1 col-md-offset-1 col-lg-offset-1  col-md-4 col-sm-4 col-lg-4">
+      <div id="charts"></div>
+  </div>
 
   </div>
   <!-- /END ROW -->
