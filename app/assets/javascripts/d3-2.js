@@ -106,7 +106,7 @@ $(document).ready(function() {
     // Toggle children on click.
     function click(d) {
       if (d.children) {
-          d._children = d.children;
+          // d._children = d.children;
           d.children = null;
           update();
       } else if (d._children) {
