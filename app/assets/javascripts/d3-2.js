@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var w = 1200,
+  var w = 1140,
     h = 800,
     node,
     link,
