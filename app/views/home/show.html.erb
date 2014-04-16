@@ -207,33 +207,36 @@
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
 
     <!-- SECTION TITLE -->
-    <h2 class="dark-text">Interactive Force Layout</h2>
+    <h2 class="dark-text">Venn</h2>
     <div class="colored-line">
     </div>
     <div class="section-description">
-      Lorem ipsum dolor kadr
+      Ven diagram
     </div>
     <div class="colored-line">
     </div>
+
   </div>
   <!-- /END SECTION HEADER -->
   <div class="row">
     <div class="col-md-12 col-sm-12">
-      <div id="d3_2">
-            <%= form_tag("/search", method: "get", class: "form-inline") do %>
-              <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
-              <%= submit_tag "Search", class: "btn btn-default" %>
-            <% end %>
-          </div>
+      <div id="d3_3">
+        <%= form_tag("/search", method: "get", class: "form-inline") do %>
+        <ul id="multi_search_3">
+        </ul>
+          <%= text_field_tag :d33, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+          <%= submit_tag "Search", class: "btn btn-default" %>
+        <% end %>
     </div>
   </div>
+
+
   <div class="row">
 
 
     <div class="col-md-12 col-sm-12 col-lg-12">
 
-
-        <div id="d3-2-chart"></div>
+          <div id="d3-3-chart"></div>
 
     </div>
 
