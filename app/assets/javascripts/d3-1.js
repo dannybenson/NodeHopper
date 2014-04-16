@@ -109,7 +109,8 @@ $(document).ready(function() {
       console.log(result);
     }, "json").done(dataDriven);
     $.post("/top", {"list" : todos}, function(result) {
-      console.log(_.map(result, function(res) { return res[0] + res[1] + res[2]}))
+      // console.log(result);
+      _.map(result, function(res) { $("#toprecs").append("<li>" + res[1] + res[0] + "</li>") })
     })
   }
 
