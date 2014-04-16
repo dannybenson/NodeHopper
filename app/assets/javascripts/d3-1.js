@@ -102,16 +102,20 @@ $(document).ready(function() {
   var updateSearch = function(todos) {
     d3.select("#charts svg").remove();
     d3.selectAll("#legend tr").remove();
+    $(".rec").hide();
+    $("#reclist").empty();
     colorStore = [];
     todos = _.map(todos, function(todo){ return todo["text"]})
-    $.post("/search", {"list" : todos}, function(result) {
-      root = result;
-      console.log(result);
-    }, "json").done(dataDriven);
-    $.post("/top", {"list" : todos}, function(result) {
-      // console.log(result);
-      _.map(result, function(res) { $("#toprecs").append("<li>" + res[1] + res[0] + "</li>") })
-    })
+    if (todos.length > 0) {
+      $.post("/search", {"list" : todos}, function(result) {
+        root = result;
+        console.log(result);
+      }, "json").done(dataDriven);
+      $.post("/top", {"list" : todos}, function(result) {
+        $(".rec").fadeIn(500);
+        _.map(result, function(res) { $("#reclist").append("<li>" + res[1] + ", " +res[0] + "</li>") })
+      })
+    }
   }
 
   var dataDriven = function() {

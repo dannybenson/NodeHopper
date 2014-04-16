@@ -81,7 +81,7 @@ class Interest
 
   def self.node_matrix(interest, label="Interest")
     paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
-    paths = paths.uniq.map {|path| path << paths.count(path) }
+    paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
     paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
     Interest.with_children(paths)
   end

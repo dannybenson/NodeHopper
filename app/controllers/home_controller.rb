@@ -58,7 +58,7 @@ class HomeController < ApplicationController
 
   def top
     interests = params[:list].map{|name| Interest.find(name)}
-    render json: Interest.combined_weighted_recommendations(interests)
+    render json: Interest.combined_weighted_recommendations(interests).take(15)
   end
 
 end
