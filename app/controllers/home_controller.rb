@@ -18,7 +18,8 @@ class HomeController < ApplicationController
     # interests = params[:interests].map{|thing| Interest.find(thing)}
     # render json: {some: "stuff"}
     # render json: Interest.combined_donut(interests)
- 		render json: Interest.donut(Interest.find(params["search"]),20)
+    binding.pry
+ 		render json: Interest.donut(Interest.find("Batman Begins"),20)
  	end
 
   def d3_2
