@@ -1,12 +1,10 @@
 $(document).ready(function() {
-  var w = 1200,
+  var w = 1140,
     h = 800,
     node,
     link,
     i = 0,
     json;
-
-  var json;
 
   $("#d3_2").on("submit", function(event) {
     event.preventDefault();
@@ -64,7 +62,7 @@ $(document).ready(function() {
 
 
       groups.append("circle")
-          .attr("r", function(d) { return d.size * 5 || 15})
+          .attr("r", function(d) { return d.size * 8 || 15})
           .style("fill", "#0196A7")
 
 
@@ -106,7 +104,7 @@ $(document).ready(function() {
     // Toggle children on click.
     function click(d) {
       if (d.children) {
-          d._children = d.children;
+          // d._children = d.children;
           d.children = null;
           update();
       } else if (d._children) {

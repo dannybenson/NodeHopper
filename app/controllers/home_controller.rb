@@ -13,8 +13,14 @@ class HomeController < ApplicationController
     render json: Interest.get_interest_names
   end
 
- 	def show
- 		render json: Interest.find(params["search"]).donut(40)
+  def show
+    # {"interests" : ["sfwef", "lsdf"]}
+    # ["Batman Begins", "The Notebook"] => make into interest objects
+    interests = params[:list].map{|name| Interest.find(name)}
+    # render json: {some: "stuff"}
+    render json: Interest.combined_donut(interests)
+    # binding.pry
+ 		# render json: Interest.donut(Interest.find("Batman Begins"),20)
  	end
 
   def d3_2
@@ -31,6 +37,28 @@ class HomeController < ApplicationController
 
   def node
     render json: Interest.node_matrix(params[:name])
+  end
+
+  def d3_3
+   render json:   { :set => [{:label => 'SE', :size => 28}, {:label => 'Treat', :size => 35},
+                   {:label => 'Anti-CCP', :size  => 108}, {:label => 'DAS28', :size =>106}],
+                   :overlaps => [{:sets => [0,1], :size =>1},
+                       {:sets => [0,2], :size =>1},
+                       {:sets => [0,3], :size =>14},
+                       {:sets => [1,2], :size =>6},
+                       {:sets => [1,3], :size =>0},
+                       {:sets => [2,3], :size =>1},
+                       {:sets => [0,2,3], :size =>1},
+                       {:sets => [0,1,2], :size =>0},
+                       {:sets => [0,1,3], :size =>0},
+                       {:sets => [1,2,3], :size =>0},
+                       {:sets => [0,1,2,3], :size =>0}
+                       ]}
+  end
+
+  def top
+    interests = params[:list].map{|name| Interest.find(name)}
+    render json: Interest.combined_weighted_recommendations(interests)
   end
 
 end

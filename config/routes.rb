@@ -1,16 +1,19 @@
 TeamKen::Application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-  root 'home#index'
-  get '/template' => 'home#template'
-  get '/sigma' => 'home#sigma'
+  root 'home#template'
   get '/data' => 'home#data'
   post '/d3_2' => 'home#d3_2'
   get '/typeahead' => 'home#typeahead'
   get '/search' => "home#template"
   post '/search' => 'home#show'
+  post '/top' => 'home#top'
   get '/node' => "home#node"
   get '/children' => "home#children"
+  post '/d3_3' => 'home#d3_3'
+
+
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

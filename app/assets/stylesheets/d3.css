@@ -7,10 +7,15 @@
 
 svg {
   position: relative;
-  top: 50px;
-  left: 50px;
+  top: 0px;
+  left: 0px;
 }
 
 #charts g {
   opacity: 0;
 }
+
+.venn {
+  background-color: #ffffff;
+}
+

@@ -2,51 +2,22 @@
 require'neography'
 require'neo4j-cypher'
 class Interest
-
+	#tested
 	@@neo = ClientHelper.get_client
-
-  def self.get_interest_names(label = "Interest")
-    @@neo.execute_query("MATCH (n:Interest) RETURN n.name")['data'].inject(Array.new){ |array, name| array << {"name" => name.first}}
-  end
-
-  def self.find_or_create_by(label, name)
-    if @@neo.find_nodes_labeled(label, {:name => name}).empty?
-      node = @@neo.create_node("name" => name)
-      @@neo.add_label(node, ["Interest", label])
-      node
-    else
-      @@neo.find_nodes_labeled(label, {:name => name}).first
-    end
-  end
-
-
-  def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name LIMIT 10")['data']
-    paths = paths.uniq.map {|path| path << paths.count(path) }
-    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
-    Interest.with_children(paths)
-  end
-
-# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-def self.with_children(node)
-  if node[node.keys.first].keys.first.is_a?(Integer)
-    { "name" => node.keys.first,
-      "size" => 1 + node[node.keys.first].keys.first
-     }
-  else
-    { "name" => node.keys.first,
-      "children" => node[node.keys.first].collect { |c|
-        with_children(Hash[c[0], c[1]]) }
-    }
-  end
-end
-
-
-	attr_reader :id,:name,:category
+	attr_reader :name,:category
 
 	def initialize(args)
 		@category = args.fetch(:category)
 		@name = args.fetch(:name)
+	end
+
+	def in_database?
+		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
+		if @@neo.find_nodes_labeled("Interest",{:name => self.name}).first
+			true
+		else
+			false
+		end
 	end
 
 	def save
@@ -88,8 +59,51 @@ end
 		self
 	end
 
-	def weighted_recommendations(number)
-		recommendations = self.recommendations
+
+	#untested
+
+
+  def self.get_interest_names(label = "Interest")
+    # @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
+    @@neo.execute_query("MATCH (n:Interest) RETURN n.name")["data"].inject(Array.new){ |array, name| array << {"name" => name.first }}
+  end
+
+  def self.find_or_create_by(label, name)
+    if @@neo.find_nodes_labeled(label, {:name => name}).empty?
+      node = @@neo.create_node("name" => name)
+      @@neo.add_label(node, ["Interest", label])
+      node
+    else
+      @@neo.find_nodes_labeled(label, {:name => name}).first
+    end
+  end
+
+
+  def self.node_matrix(interest, label="Interest")
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name limit 10")['data']
+    paths = paths.uniq.map {|path| path << paths.count(path) }
+    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
+    Interest.with_children(paths)
+  end
+
+# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+	def self.with_children(node)
+	  if node[node.keys.first].keys.first.is_a?(Integer)
+	    { "name" => node.keys.first,
+	      "size" => 1 + node[node.keys.first].keys.first
+	     }
+	  else
+	    { "name" => node.keys.first,
+	      "children" => node[node.keys.first].collect { |c|
+	        with_children(Hash[c[0], c[1]]) }
+	    }
+	  end
+	end
+
+
+
+  	def self.combined_weighted_recommendations(interest_array)
+		recommendations = self.combined_recommendations(interest_array)
     if recommendations
 	    results = []
 	    # titles = recommendations.map{|title| title[1]}
@@ -98,14 +112,14 @@ end
 	      title << recommendations.count{|interest| interest[1] == title[1]}
 	      results << title
 	    end
-	    return results.sort{ |a,b| b[2] <=> a[2]}[0..number-1]
+	    return results.sort{ |a,b| b[2] <=> a[2]}[0..19]
 	  else
 	  	nil
 	  end
   end
 
-  def percentage_recommendations(number)
-  	recommendations = self.weighted_recommendations(number)
+  def self.combined_percentage_recommendations(interest_array)
+  	recommendations = self.combined_weighted_recommendations(interest_array)
   	if recommendations
 	    categories = recommendations.map{|interest| interest[0]}.uniq
 	    category_count = {}
@@ -129,8 +143,11 @@ end
 
 
 
-  def donut(number)
-  	input = self.percentage_recommendations(number)
+
+
+
+  def self.combined_donut(interest_array)
+  	input = self.combined_percentage_recommendations(interest_array)
   	if input
 	  	results = {'title' => '', 'children' => []}
 	  	categories = input.map(&:first).uniq
@@ -159,12 +176,108 @@ end
 		end
 	end
 
-	def in_database?
-		query = "MATCH (interest {name:'"+self.name+"'}) RETURN interest.name"
-		if @@neo.find_nodes_labeled("Interest",{:name => self.name}).first
-			true
+
+	def weighted_recommendations
+		recommendations = self.recommendations
+    if recommendations
+	    results = []
+	    unique = recommendations.uniq
+	    unique.each do |title|
+	      title << recommendations.count{|interest| interest[1] == title[1]}
+	      results << title
+	    end
+	    return results.sort{ |a,b| b[2] <=> a[2]}
+	  else
+	  	nil
+	  end
+	end
+
+
+
+	def self.combined_recommendations(interest_array)
+		interests = interest_array.map{|interest| interest.name}
+		result = interest_array.map{|interest| interest.recommendations}
+		result.flatten!(1).reject!{|recommendation| interests.include?(recommendation[1])}
+		if result[0]
+			return result
 		else
-			false
+			return nil
 		end
 	end
+
+
+
+
+
+
+
+
+
+
+
+# var root = { "set": [{label : 'SE', size : 28}, {label : 'Treat', size: 35}, {label : 'snow', size: 20}],
+#     "overlap": [{sets : [0,1], size:2},
+#           {sets :  [0,2], size:3},
+#           {sets : [1,2], size: 10},
+#           {sets : [0,1,2], size: 10}
+#                        ]};
+
+	def self.venn(interest_array)
+		interest_names=interest_array.map{|interest| interest.name}
+		# p interest_names
+		interest_hashes = interest_array.map{|interest| {"name"=>interest.name,"recommendations"=>interest.weighted_recommendations}}
+		# p interest_hashes
+		output = {"set"=>[],"overlap"=>[]}
+		# p interest_hashes[0]['recommendations'][0]
+		interest_hashes.each do |interest|
+			interest_names.each do |name|
+				interest['recommendations'].reject! do |recommendation|
+					name == recommendation[1]
+				end
+			end
+			count = 0
+			interest['recommendations'].each do |suggestion|
+				count+=suggestion[2]
+			end
+			output['set'] << {'label'=>interest['name'] ,'size'=> count}
+		end
+		#part 2
+		indices = (0...interest_hashes.length).to_a
+		index_combos= 2.upto(indices.length).flat_map { |n| indices.combination(n).to_a }
+		recommendation_lists = interest_array.map{|interest| interest.recommendations}
+		recommendation_lists.each do |list| 
+			interest_names.each do |name|
+				list.reject! do |recommendation|
+					name == recommendation[1]
+				end
+			end	
+		end
+		# p recommendation_lists[1]
+		# p recommendation_lists[2]
+		index_combos.each do |combo|
+			p combo 
+			intersection = recommendation_lists[combo[0]]
+			combo.each_with_index do |number, index|
+				if intersection[0]
+					intersection = intersection & recommendation_lists[combo[index]]
+				else
+					break
+				end
+			end
+			if intersection
+				size = intersection.length
+			else
+				size = 0
+			end
+			output['overlap'] << {sets: combo, size: size} 
+		end 
+		return output
+	end
 end
+
+
+
+
+
+
+
