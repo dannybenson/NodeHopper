@@ -480,7 +480,7 @@
             padding = parameters.padding || 6;
 
         dataset = venn.scaleSolution(dataset, width, height, padding);
-        var svg = d3.select("#charts").append("svg")
+        var svg = d3.select("#d3-3-chart").append("svg")
                 .attr("class", "venn")
                 .attr("width", width)
                 .attr("height", height);
@@ -512,7 +512,7 @@
 
         centerVennDiagram( diagram, width, height, padding );
 
-        d3.select("#charts svg").selectAll("g").transition().delay(20).duration(1000)
+        d3.select("#d3-3-chart svg").selectAll("g").transition().delay(20).duration(1000)
             .style("opacity", 1)
             .remove;
 
