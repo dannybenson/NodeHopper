@@ -9,8 +9,8 @@ $(document).ready(function() {
   $("#d3_2").on("submit", function(event) {
     event.preventDefault();
     d3.select("#d3-2-chart svg").remove();
-    var input = { search: $("#d3_2 #search").val()};
-    $.post("/d3_2", input, function(result) {
+    var input = { name: $("#d3_2 #search").val()};
+    $.get("/nodes", input, function(result) {
       json = result;
     }, "json").done(d3_2);
   })
@@ -112,7 +112,7 @@ $(document).ready(function() {
           d._children = null;
           update();
       } else {
-        $.get('/children', {name: d.name}, function(data) {
+        $.get('/nodes', {name: d.name}, function(data) {
           d.children = data["children"]
           update();
         })
