@@ -12,6 +12,24 @@
  *= require_tree ../../../vendor/assets/stylesheets/
  *= require_tree .
  */
+
+ section {
+  height: 1000px;
+ }
+ .section-header {
+    margin: 0;
+    padding: 0;
+ }
+ .row {
+  margin: 0px 0 40px 0;
+ }
+ .color-legend {
+  margin-top: 80px;
+ }
+
+ #charts {
+  margin-top: 20px;
+ }
 #multi_search input {
   margin:0;
   padding: 0;

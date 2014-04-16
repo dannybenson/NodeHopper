@@ -39,5 +39,10 @@ class HomeController < ApplicationController
     render json: Interest.node_matrix(params[:name])
   end
 
+  def top
+    interests = params[:list].map{|name| Interest.find(name)}
+    render json: Interest.combined_weighted_recommendations(interests)
+  end
+
 end
 

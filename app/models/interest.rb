@@ -80,7 +80,7 @@ class Interest
 
 
   def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name LIMIT 10")['data']
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name limit 10")['data']
     paths = paths.uniq.map {|path| path << paths.count(path) }
     paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
     Interest.with_children(paths)
@@ -237,13 +237,13 @@ class Interest
 			end
 			count = 0
 			interest['recommendations'].each do |suggestion|
-				count+=suggestion[2]	
+				count+=suggestion[2]
 			end
-			output['set'] << {'label'=>interest['name'] ,'size'=> count} 
+			output['set'] << {'label'=>interest['name'] ,'size'=> count}
 		end
 		#part 2
 		return output
-	end	
+	end
 end
 
 

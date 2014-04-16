@@ -64,7 +64,7 @@ $(document).ready(function() {
 
 
       groups.append("circle")
-          .attr("r", function(d) { return d.size * 5 || 15})
+          .attr("r", function(d) { return d.size * 8 || 15})
           .style("fill", "#0196A7")
 
 
