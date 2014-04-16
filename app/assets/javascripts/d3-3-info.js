@@ -5,6 +5,6 @@ var root = { "set": [{label : 'SE', size : 28}, {label : 'Treat', size: 35}, {la
           {sets : [0,1,2], size: 10}
                        ]};
 
-venn.drawD3Diagram(venn.venn(root.set, root.overlap), 300,
+venn.drawD3Diagram(venn.venn(root.set, root.overlap), 300);
 
 

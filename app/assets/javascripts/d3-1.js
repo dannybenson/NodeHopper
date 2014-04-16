@@ -175,7 +175,3 @@ $(document).ready(function() {
       .attr("hegith", "5px");
 
   }
-
-
-
-})

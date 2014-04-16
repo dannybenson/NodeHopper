@@ -6,8 +6,6 @@ $(document).ready(function() {
     i = 0,
     json;
 
-  var json;
-
   $("#d3_2").on("submit", function(event) {
     event.preventDefault();
     d3.select("#d3-2-chart svg").remove();
