@@ -242,6 +242,35 @@ class Interest
 			output['set'] << {'label'=>interest['name'] ,'size'=> count} 
 		end
 		#part 2
+		indices = (0...interest_hashes.length).to_a
+		index_combos= 2.upto(indices.length).flat_map { |n| indices.combination(n).to_a }
+		recommendation_lists = interest_array.map{|interest| interest.recommendations}
+		recommendation_lists.each do |list| 
+			interest_names.each do |name|
+				list.reject! do |recommendation|
+					name == recommendation[1]
+				end
+			end	
+		end
+		# p recommendation_lists[1]
+		# p recommendation_lists[2]
+		index_combos.each do |combo|
+			p combo 
+			intersection = recommendation_lists[combo[0]]
+			combo.each_with_index do |number, index|
+				if intersection[0]
+					intersection = intersection & recommendation_lists[combo[index]]
+				else
+					break
+				end
+			end
+			if intersection
+				size = intersection.length
+			else
+				size = 0
+			end
+			output['overlap'] << {sets: combo, size: size} 
+		end 
 		return output
 	end	
 end
