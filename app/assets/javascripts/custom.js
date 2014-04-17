@@ -38,6 +38,9 @@ $(document).ready(function() {
     scrollOffset: 60 //Height of Navigation Bar
   });
 
+  $('.front-navigation').onePageFront({
+  });
+
 });
 
 /* NAVIGATION VISIBLE ON SCROLL */
