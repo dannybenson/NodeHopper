@@ -16,6 +16,9 @@
   background: #008ed6!important;
   z-index: 1000!important;
 }*/
+header .solid-color {
+  min-height: 500px;
+}
 .rec {
   margin-top: 76px;
 }
