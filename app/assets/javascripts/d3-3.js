@@ -320,7 +320,7 @@
 
                 transformX = Math.floor( ( allowedWidth - ( diagramBoundaries.width * scale ) ) / 2 );
                 transformY = Math.floor( ( allowedHeight - ( diagramBoundaries.height * scale ) ) / 2 );
-                diagram.attr( "transform", "translate(" + transformX + ","  + transformY + ") " + transform );
+                // diagram.attr( "transform", "translate(" + transformX + ","  + transformY + ")  );
             }
         }
     }
@@ -485,7 +485,8 @@
                 .attr("width", width)
                 .attr("height", height);
 
-        var diagram = svg.append( "g" );
+        var diagram = svg.append( "g" )
+            .attr("translate", "transform(20px,30px)");
 
         var nodes = diagram.selectAll("circle")
                          .data(dataset)

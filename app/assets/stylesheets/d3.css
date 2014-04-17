@@ -19,10 +19,10 @@
   margin: 20px auto;
 }
 
-.venn {
-  background-color: #ffffff;
-}
-
 #d3-3-chart svg g text {
   opacity: 0;
+}
+
+#d3-3-chart {
+  margin-top: 50px;
 }
