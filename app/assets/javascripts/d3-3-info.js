@@ -87,7 +87,7 @@ $(function(){
     controller.bindEvents();
 
     var root;
-    var drawVenn = function() {venn.drawD3Diagram(venn.venn(root.set, root.overlap), 250, 250) }
+    var drawVenn = function() {venn.drawD3Diagram(venn.venn(root.set, root.overlap), 400, 250) }
 
     var showErrorMessage = function() {
       $("#multi_search_3").append('<li id="d3_1_error">Hmm, Please Try Again</li>')
