@@ -254,8 +254,6 @@ describe Interest do
       e.destroy
     end
   end 
-
-
 end
 
 
