@@ -146,3 +146,27 @@ line.link {
 .gist {
   font-size: 14px;
 }
+
+.button {
+  height: 50px;
+  width: 40px;
+}
+#nav-buttons li {
+  display: inline-block;
+  margin-right: 60px;
+}
+
+#nav-buttons a {
+  border-radius: 60px;
+  }
+
+#nav-buttons {
+  margin-top: 40px;
+}
+
+#nav-buttons p {
+  color: #ffffff;
+  padding-top: 5px;
+  text-align: center;
+  font-size: 19px;
+}
