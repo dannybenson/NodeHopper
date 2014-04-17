@@ -76,11 +76,13 @@ class Interest
 
   def self.node_matrix(interest, label="Interest")
     paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN ri1.name")['data']
-    paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
-    results = {"name" => interest, "children" => []}
-    paths.each {|p| results['children'] << {"name" => p[0], "size" => p[1]} }
-    return nil.each if results == {"name" => interest, "children" => []}
-    results
+    # paths['children']
+    # raise "no data" if paths['children'].empty?
+    # paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
+    # results = {"name" => interest, "children" => []}
+    # paths.each {|p| results['children'] << {"name" => p[0], "size" => p[1]} }
+    # # return nil.each{} if results == {"name" => interest, "children" => []}
+    # results
   end
 
 	def recommendations
