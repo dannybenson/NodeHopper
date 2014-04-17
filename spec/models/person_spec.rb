@@ -79,6 +79,20 @@ describe Person do
       expect(b).to eq(nil)
     end
   end
+
+    describe "shovel" do
+    it "creates a relationship between a person and an interest" do
+      a = Person.create(user_id_hash: 1)
+      b = Interest.create(name: 'stuff',category: 'thing')
+      c = Interest.create(name: "more",category: 'thing')
+      a << b
+      a << c
+      expect(b.recommendations).to_not be_nil
+      a.destroy
+      b.destroy
+      c.destroy
+    end
+  end
 end
 
 
