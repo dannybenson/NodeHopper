@@ -87,7 +87,7 @@ $(function(){
     controller.bindEvents();
 
     var root;
-    var drawVenn = function() {venn.drawD3Diagram(venn.venn(root.set, root.overlap), 700, 700) }
+    var drawVenn = function() {venn.drawD3Diagram(venn.venn(root.set, root.overlap), 250, 250) }
 
     var showErrorMessage = function() {
       $("#multi_search_3").append('<li id="d3_1_error">Hmm, Please Try Again</li>')
@@ -108,6 +108,7 @@ $(function(){
     todos = _.map(todos, function(todo){ return todo["text"]})
     $.get("/d3_3", {"list" : todos}, function(result) {
       root = result;
+      d3.select("#d3-3-chart svg").remove();
     }, "json").done(drawVenn);
   }
 
