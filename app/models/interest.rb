@@ -59,10 +59,6 @@ class Interest
 		self
 	end
 
-
-	#untested
-
-
   def self.get_interest_names(label = "Interest")
     # @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
     @@neo.execute_query("MATCH (n:Interest) RETURN n.name")["data"].inject(Array.new){ |array, name| array << {"name" => name.first }}
@@ -78,31 +74,17 @@ class Interest
     end
   end
 
-
   def self.node_matrix(interest, label="Interest")
-    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN startnode.name, ri1.name ORDER BY startnode.name, ri1.name")['data']
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN ri1.name")['data']
     paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
-    paths = paths.inject({}) {|h,i| t = h; i.each {|n| t[n] ||= {}; t = t[n]}; h}
-    Interest.with_children(paths)
+    results = {"name" => interest, "children" => []}
+    paths.each {|p| results['children'] << {"name" => p[0], "size" => p[1]} }
+    results
   end
 
-# @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-	def self.with_children(node)
-	  if node[node.keys.first].keys.first.is_a?(Integer)
-	    { "name" => node.keys.first,
-	      "size" => 1 + node[node.keys.first].keys.first
-	     }
-	  else
-	    { "name" => node.keys.first,
-	      "children" => node[node.keys.first].collect { |c|
-	        with_children(Hash[c[0], c[1]]) }
-	    }
-	  end
-	end
 
 
-
-  	def self.combined_weighted_recommendations(interest_array)
+	def self.combined_weighted_recommendations(interest_array)
 		recommendations = self.combined_recommendations(interest_array)
     if recommendations
 	    results = []
