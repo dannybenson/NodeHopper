@@ -14,7 +14,7 @@
  */
 
  section {
-  
+
  }
  .section-header {
     margin: 0;
@@ -31,7 +31,7 @@
  #charts {
   margin-top: 20px;
  }
-#multi_search input {
+#multi_search input, #multi_search_3 input {
   margin:0;
   padding: 0;
   background-color: transparent;
@@ -39,7 +39,7 @@
   width: 180px;
   color: white;
 }
-#multi_search li {
+#multi_search li, #multi_search_3 li {
   width: 221px;
   color: #FFFFFF;
   background-color: grey;
@@ -50,14 +50,14 @@
   padding: 2px 10px 0px 10px;
   border-radius: 4px;
 }
-#multi_search li span {
+#multi_search li span, #multi_search_3 li span {
   float: right;
   cursor: pointer;
 }
 .index {
   display: none;
 }
-#d3_1 {
+#d3_1, #d3_3 {
   padding-left: 63px;
   /*margin-left*/
 }

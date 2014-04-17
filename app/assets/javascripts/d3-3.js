@@ -493,7 +493,7 @@
                          .append("g");
 
         var circles = nodes.append("circle")
-               .attr("r",  function(d) { return d.radius; })
+               .attr("r",  0)
                .style("fill-opacity", nodeOpacity)
                .attr("cx", function(d) { return d.x; })
                .attr("cy", function(d) { return d.y; })
@@ -512,9 +512,18 @@
 
         centerVennDiagram( diagram, width, height, padding );
 
-        d3.select("#d3-3-chart svg").selectAll("g").transition().delay(20).duration(1000)
+        text.transition().delay(20).duration(3500)
             .style("opacity", 1)
             .remove;
+
+        circles.call(transition, function(d) { return d.radius; })
+
+            function transition(element, end) {
+                element.transition()
+                    .duration(3000)
+                    .attr("r", end)
+            }
+
 
         return {'svg' : svg,
                 'nodes' : nodes,

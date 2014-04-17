@@ -86,7 +86,7 @@
 ============================== -->
 <section class="features" id="search">
 
-<div class="container">
+<div class="container ">
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
@@ -110,7 +110,7 @@
           <ul id="multi_search">
             <li id="d3_1_error" style="display: none">Hmm, Please Try Again</li>
           </ul>
-          <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+          <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", class: "form-control typeahead"  %>
           <%= submit_tag "Search", class: "btn btn-default" %>
         <% end %>
       </div>
@@ -202,7 +202,7 @@
 ============================== -->
 <section class="features" id="compare">
 
-<div class="container">
+<div class="container" id="accordion">
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
@@ -220,12 +220,12 @@
   </div>
   <!-- /END SECTION HEADER -->
   <div class="row">
-    <div class="col-md-12 col-sm-12">
+    <div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset-4">
       <div id="d3_3">
         <%= form_tag("/search", method: "get", class: "form-inline") do %>
         <ul id="multi_search_3">
         </ul>
-          <%= text_field_tag :d33, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+          <%= text_field_tag :d33, "", placeholder: "Your Interest", class: "form-control typeahead"  %>
           <%= submit_tag "Search", class: "btn btn-default" %>
         <% end %>
     </div>
