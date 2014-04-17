@@ -144,27 +144,21 @@ $(document).ready(function() {
       .data(partition.nodes)
       .enter().append("g")
 
-      path.append("path")
+   var donut = path.append("path")
         .attr("class", function(d) {if (d.data) {return d.title + " "+ Math.floor(d.data * 100) + "%"} else { return d.title}})
-        .attr("d", arc)
+        .attr("d", 0)
         .attr("display", function(d) {return d.depth ? null : "none" ;})
         .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
         .style("stroke", "#fff")
         .on("mouseover", function(d) {return title.text(this.className.animVal).style("visibility","visible");})
         .on("mousemove", function(d) {return title.style("top", (event.pageY-10) + "px").style("left", (event.pageX+10)+ "px");})
-        .on("mouseout", function(d) {return title.style("visibility", "hidden")});
+        .on("mouseout", function(d) {return title.style("visibility", "hidden")})
+        .call(transition, arc);
 
 
-  var transition = d3.select("#charts").transition()
-
-    .delay(0)
-    .duration(2000);
-
-  transition.each(function() {
-      d3.selectAll("g").transition()
-      .style("opacity", 1)
-      .remove;
-    })
+        function transition(element, arc) {
+            element.transition().delay(10).duration(500).attr("d", arc)
+        }
 
   colorStore.shift(1)
 
