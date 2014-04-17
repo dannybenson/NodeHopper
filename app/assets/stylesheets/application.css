@@ -8,17 +8,28 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require_self
  *= require_tree ../../../vendor/assets/stylesheets/
  *= require_tree .
+ *= require_self
  */
+.rec {
+  margin-top: 76px;
+}
+.form-control {
+  padding: 0 0px 0 10px;
 
- section {
-
- }
+}
+.btn {
+  margin-top: 4px ;
+}
+.features {
+  padding-top: 40px;
+  padding-bottom: 30px;
+  background: #ffffff;
+}
  .section-header {
     margin: 0;
-    padding: 0;
+    padding-bottom: 10px!important;
  }
  .row {
   margin: 0px 0 40px 0;
@@ -40,7 +51,6 @@
   color: white;
 }
 #multi_search li, #multi_search_3 li {
-  width: 221px;
   color: #FFFFFF;
   background-color: grey;
   margin: 2px 0px;
@@ -57,11 +67,12 @@
 .index {
   display: none;
 }
-#d3_1, #d3_3 {
-  padding-left: 63px;
+
+#d3_1, #d3_2, #d3_3 {
+  padding-left: 32px;
   /*margin-left*/
 }
-#d3_1 form {
+#d3_1 form, #d3_2 form, #d3_3 form {
   float: left;
 }
 circle.node {
@@ -82,7 +93,7 @@ line.link {
 .typeahead,
 .tt-query,
 .tt-hint {
-  width: 396px;
+  /*width: 396px;
   height: 30px;
   padding: 8px 12px;
   font-size: 24px;
@@ -91,7 +102,7 @@ line.link {
   -webkit-border-radius: 8px;
      -moz-border-radius: 8px;
           border-radius: 8px;
-  outline: none;
+  outline: none;*/
 }
 
 .typeahead {
@@ -113,7 +124,7 @@ line.link {
 }
 
 .tt-dropdown-menu {
-  width: 422px;
+  width: 286px;
   margin-top: 12px;
   padding: 8px 0;
   background-color: #fff;
