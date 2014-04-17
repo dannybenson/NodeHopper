@@ -1,24 +1,23 @@
 $(document).ready(function() {
 
   //dynamic list
+  var index = 0
   function TodoController() {
       this.index = 0
     }
 
     TodoController.prototype = {
       bindEvents : function() {
-        $("#d3_1 form").submit(this.create.bind(this));
+        // $("#d3_1 form").submit(this.create.bind(this));
         $("#multi_search").on("click", this.delete.bind(this))
-        $("#multi_search li").on("keyup", this.update.bind(this));
+        // $("#multi_search li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();
-        if ($('#d3_1_search').val() != "") {
-          var todo = new Todo($('#d3_1_search').val(), this.index)
-          this.index++
+          var todo = new Todo($('#d3_1_search').val(), index)
+          index++
           $('#d3_1_search').val("")
           TodoList.add(todo)
-        }
       },
       update: function(key){
         event.preventDefault();
@@ -62,14 +61,10 @@ $(document).ready(function() {
     }
 
     var TodoList = {
-      limit : 3,
       todos : [],
       add   : function(todo) {
-        if (this.todos.length < 3) {
         this.todos.push(todo)
         TodoView.update(this.todos)
-
-      }
       },
       update : function(index,text) {
         this.todos = _.map(this.todos, function(todo){ if (todo.index == index) {
@@ -89,15 +84,24 @@ $(document).ready(function() {
 
     var controller = new TodoController();
     controller.bindEvents();
+    var showErrorMessage = function() {
+      $("#multi_search").append('<li id="d3_1_error">Hmm, Please Try Again</li>')
+    }
+    var validate = function() {
+      event.preventDefault();
+      $.get("/search", {"list" : [$('#d3_1_search').val()]}).done(controller.create).fail(showErrorMessage)
+    }
+
+    $("#d3_1 form").submit(validate);
+
 
   //d3 portion
-  var w = 550;
+  var w = 500;
   var h = 500;
   var r = Math.min(w,h)/2;
   var color = d3.scale.category20c();
   var root = {};
   var colorStore = [];
-
 
   var updateSearch = function(todos) {
     d3.select("#charts svg").remove();
@@ -107,11 +111,10 @@ $(document).ready(function() {
     colorStore = [];
     todos = _.map(todos, function(todo){ return todo["text"]})
     if (todos.length > 0) {
-      $.post("/search", {"list" : todos}, function(result) {
+      $.get("/search", {"list" : todos}, function(result) {
         root = result;
-        console.log(result);
       }, "json").done(dataDriven);
-      $.post("/top", {"list" : todos}, function(result) {
+      $.get("/top", {"list" : todos}, function(result) {
         $(".rec").fadeIn(500);
         _.map(result, function(res) { $("#reclist").append("<li>" + res[1] + ", " +res[0] + "</li>") })
       })
