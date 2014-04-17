@@ -89,7 +89,7 @@
 ============================== -->
 <section class="features" id="search">
 
-<div class="container ">
+<div class="container">
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
@@ -99,7 +99,7 @@
     <div class="colored-line">
     </div>
     <div class="section-description">
-      Search Multiple Interests
+        Search multiple items and view recommendations across categories.
     </div>
     <div class="colored-line">
     </div>
@@ -159,13 +159,12 @@
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
-
     <!-- SECTION TITLE -->
     <h2 class="dark-text">Explore</h2>
     <div class="colored-line">
     </div>
     <div class="section-description">
-      Interactive Force Layout
+      Your interest is connected to other interests. Click on nodes to explore.
     </div>
     <div class="colored-line">
     </div>
@@ -175,13 +174,13 @@
     <div class="col-md-4 col-sm-4 col-md-offset-4 col-sm-offset 4">
       <div id="d3_2">
         <ul id="multi_search_2">
-            <li id="d3_2_error" style="display: none">Hmm, Please Try Again</li>
-          </ul>
-            <%= form_tag("/search", method: "get", class: "form-inline form") do %>
-              <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
-              <%= submit_tag "Search", class: "btn btn-default" %>
-            <% end %>
-          </div>
+          <li id="d3_2_error" style="display: none">Hmm, Please Try Again</li>
+        </ul>
+          <%= form_tag("/search", method: "get", class: "form-inline form") do %>
+          <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength:  15, class: "form-control typeahead"  %>
+          <%= submit_tag "Search", class: "btn btn-default" %>
+          <% end %>
+      </div>
     </div>
   </div>
   <div class="row">
@@ -190,7 +189,7 @@
     <div class="col-md-12 col-sm-12 col-lg-12">
 
 
-        <div id="d3-2-chart"></div>
+      <div id="d3-2-chart"></div>
 
     </div>
 
@@ -204,9 +203,6 @@
 <!-- /END SECTION -->
 
 
-<!-- =========================
-     BRIEF RIGHT SECTION
-============================== -->
 <section class="features" id="compare">
 
 <div class="container" id="accordion">
@@ -219,7 +215,7 @@
     <div class="colored-line">
     </div>
     <div class="section-description">
-      Venn Diagram
+      See how interests overlap. 
     </div>
     <div class="colored-line">
     </div>
@@ -232,8 +228,8 @@
         <%= form_tag("/search", method: "get", class: "form-inline") do %>
         <ul id="multi_search_3">
         </ul>
-          <%= text_field_tag :d33, "", placeholder: "Your Interest", class: "form-control typeahead"  %>
-          <%= submit_tag "Search", class: "btn btn-default" %>
+        <%= text_field_tag :d33, "", placeholder: "Your Interest", class: "form-control typeahead"  %>
+        <%= submit_tag "Search", class: "btn btn-default" %>
         <% end %>
       </div>
     </div>

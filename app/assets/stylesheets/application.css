@@ -12,6 +12,10 @@
  *= require_tree .
  *= require_self
  */
+/*.colored-line, .colored-line-left {
+  background: #008ed6!important;
+  z-index: 1000!important;
+}*/
 .rec {
   margin-top: 76px;
 }
@@ -25,12 +29,11 @@
 .features {
   padding-top: 40px;
   padding-bottom: 0px;
-  background: #ffffff;
 }
- .section-header {
+/* .section-header {
     margin: 0;
-    padding-bottom: 10px!important;
- }
+    padding-bottom: 10px;
+ }*/
  .row {
   margin: 0px 0 40px 0;
  }
