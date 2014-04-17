@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  var w = 1140,
-    h = 800,
+  var w = 600,
+    h = 600,
     node,
     link,
     i = 0,
@@ -70,13 +70,14 @@ $(document).ready(function() {
 
       groups.append("circle")
           .attr("r", function(d) { return d.size * 5 || 15})
-          .style("fill", "#0196A7")
+          .style("fill", "#6BAED6")
 
 
       groups.append("text")
           .attr("dx", 12)
           .attr("dy", "0.35em")
-          .style("font-size", "10px")
+          .style("font-size", "12px")
+          .style("font-family", "sans-serif")
           .text(function (d) {
           return d.name
       });
