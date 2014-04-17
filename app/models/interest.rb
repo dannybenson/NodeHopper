@@ -79,6 +79,7 @@ class Interest
     paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
     results = {"name" => interest, "children" => []}
     paths.each {|p| results['children'] << {"name" => p[0], "size" => p[1]} }
+    return nil.each if results == {"name" => interest, "children" => []}
     results
   end
 

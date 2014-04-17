@@ -1,23 +1,21 @@
 $(function(){
-
+      var index = 0
       function TodoController() {
       this.index = 0
     }
 
     TodoController.prototype = {
       bindEvents : function() {
-        $("#d3_3 form").submit(this.create.bind(this));
+        // $("#d3_3 form").submit(this.create.bind(this));
         $("#multi_search_3").on("click", this.delete.bind(this))
-        $("#multi_search_3 li").on("keyup", this.update.bind(this));
+        // $("#multi_search_3 li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();
-        if ($('#d33').val() != "") {
-          var todo = new Todo($('#d33').val(), this.index)
-          this.index++
+          var todo = new Todo($('#d33').val(), index)
+          index++
           $('#d33').val("")
           TodoList.add(todo)
-        }
       },
       update: function(key){
         event.preventDefault();
@@ -91,25 +89,26 @@ $(function(){
     var root;
     var drawVenn = function() {venn.drawD3Diagram(venn.venn(root.set, root.overlap), 300, 300) }
 
+    var showErrorMessage = function() {
+      $("#multi_search_3").append('<li id="d3_1_error">Hmm, Please Try Again</li>')
+    }
+
+    var validate = function() {
+      event.preventDefault();
+      console.log("validate was called")
+      // $.get("/search", {"list" : [$('#d3_1_search').val()]}).done(controller.create).fail(showErrorMessage)
+      $.get("/d3_3", {"list" : [$('#d33').val()]}, "json").done(controller.create).fail(showErrorMessage)
+    }
+
+
+    $("#d3_3 form").submit(validate);
+
   var updateSearch = function(todos) {
     d3.select("#d3-3-chart svg").remove();
     todos = _.map(todos, function(todo){ return todo["text"]})
-    $.post("/d3_3", {"list" : todos}, function(result) {
+    $.get("/d3_3", {"list" : todos}, function(result) {
       root = result;
     }, "json").done(drawVenn);
   }
 
-
-  //   $("#d3_3").on("submit", function(event) {
-  //   event.preventDefault();
-  //   var input = {list: ["Dollhouse", "Firefly", "Game of Thrones" ]}
-  //   console.log(input);
-  //   $.post("/d3_3", input, function(result) {
-  //   console.log(result);
-  //   return root = result;
-  // }, "json").done(drawVenn)
-  //   })
 })
-
-
-// $("#d33").val()

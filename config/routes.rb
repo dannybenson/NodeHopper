@@ -6,6 +6,6 @@ TeamKen::Application.routes.draw do
   get '/search' => 'home#show'
   get '/top' => 'home#top'
   get '/nodes' => "home#nodes"
-  post '/d3_3' => 'home#d3_3'
+  get '/d3_3' => 'home#d3_3'
 
 end
