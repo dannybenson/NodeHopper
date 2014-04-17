@@ -148,12 +148,12 @@ line.link {
 }
 
 .button {
-  height: 40px;
-  width: 30px;
+  height: 50px;
+  width: 40px;
 }
 #nav-buttons li {
   display: inline-block;
-  margin-right: 40px;
+  margin-right: 60px;
 }
 
 #nav-buttons a {
@@ -162,4 +162,11 @@ line.link {
 
 #nav-buttons {
   margin-top: 40px;
+}
+
+#nav-buttons p {
+  color: #ffffff;
+  padding-top: 5px;
+  text-align: center;
+  font-size: 19px;
 }
