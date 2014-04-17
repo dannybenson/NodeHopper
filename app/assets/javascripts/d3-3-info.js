@@ -8,7 +8,7 @@ $(function(){
       bindEvents : function() {
         $("#d3_3 form").submit(this.create.bind(this));
         $("#multi_search_3").on("click", this.delete.bind(this))
-        $("#items").on("keyup", this.update.bind(this));
+        $("#multi_search_3 li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();

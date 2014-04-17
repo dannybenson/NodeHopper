@@ -146,7 +146,7 @@ $(document).ready(function() {
 
    var donut = path.append("path")
         .attr("class", function(d) {if (d.data) {return d.title + " "+ Math.floor(d.data * 100) + "%"} else { return d.title}})
-        .attr("d", 0)
+        .attr("d", 1)
         .attr("display", function(d) {return d.depth ? null : "none" ;})
         .attr("fill", function(d) {if(d.children) { colorStore.push({"category":(d.title), "color":color(d.title)}); return color(d.title);} else {return color(d.parent.title)};})
         .style("stroke", "#fff")
