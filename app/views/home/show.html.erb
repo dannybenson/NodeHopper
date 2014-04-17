@@ -86,7 +86,7 @@
 ============================== -->
 <section class="features" id="search">
 
-<div class="container " id="accordion">
+<div class="container ">
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
@@ -199,7 +199,7 @@
 ============================== -->
 <section class="features" id="explore">
 
-<div class="container">
+<div class="container" id="accordion">
 
   <!-- SECTION HEADER -->
   <div class="section-header wow fadeIn animated" data-wow-offset="120" data-wow-duration="1.5s">
@@ -222,7 +222,7 @@
         <%= form_tag("/search", method: "get", class: "form-inline") do %>
         <ul id="multi_search_3">
         </ul>
-          <%= text_field_tag :d33, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
+          <%= text_field_tag :d33, "", placeholder: "Your Interest", class: "form-control typeahead"  %>
           <%= submit_tag "Search", class: "btn btn-default" %>
         <% end %>
     </div>
