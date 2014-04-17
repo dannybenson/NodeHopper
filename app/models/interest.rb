@@ -2,7 +2,6 @@
 require'neography'
 require'neo4j-cypher'
 class Interest
-	#tested
 	@@neo = ClientHelper.get_client
 	attr_reader :name,:category
 
@@ -46,8 +45,7 @@ class Interest
 		node = @@neo.find_nodes_labeled("Interest", {:name => name}).first
 		if node
 			name = @@neo.get_node_properties(node)["name"]
-
-			category = "yeah, this doesn't support category yet"#this...needs fixing
+			category = "Interest"
 			return interest = Interest.new({name:name,category:category})
 		end
 	end
@@ -60,7 +58,6 @@ class Interest
 	end
 
   def self.get_interest_names(label = "Interest")
-    # @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
     @@neo.execute_query("MATCH (n:Interest) RETURN n.name")["data"].inject(Array.new){ |array, name| array << {"name" => name.first }}
   end
 
@@ -111,7 +108,6 @@ class Interest
 		recommendations = self.combined_recommendations(interest_array)
     if recommendations
 	    results = []
-	    # titles = recommendations.map{|title| title[1]}
 	    unique = recommendations.uniq
 	    unique.each do |title|
 	      title << recommendations.count{|interest| interest[1] == title[1]}
@@ -154,14 +150,7 @@ class Interest
 	  end
   end
 
-
-
-	#untested
-
-
-
   def self.get_interest_names(label = "Interest")
-    # @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
     @@neo.execute_query("MATCH (n:Interest) RETURN n.name")["data"].inject(Array.new){ |array, name| array << {"name" => name.first }}
   end
 
@@ -196,12 +185,8 @@ class Interest
 
 	def self.venn(interest_array)
 		interest_names=interest_array.map{|interest| interest.name}
-		# p interest_names
 		interest_hashes = interest_array.map{|interest| {"name"=>interest.name,"recommendations"=>interest.recommendations.uniq}}
-		# p interest_hashes
 		output = {"set"=>[],"overlap"=>[]}
-		# p interest_hashes[0]['recommendations'][0]
-		#part 1
 		interest_hashes.each do |interest|
 			interest_names.each do |name|
 				interest['recommendations'].reject! do |recommendation|
@@ -211,7 +196,6 @@ class Interest
 
 			output['set'] << {'label'=>interest['name'] ,'size'=> interest['recommendations'].length}
 		end
-		#part 2
 		indices = (0...interest_hashes.length).to_a
 		index_combos= 2.upto(indices.length).flat_map { |n| indices.combination(n).to_a }
 		recommendation_lists = interest_array.map{|interest| interest.recommendations}
@@ -222,8 +206,6 @@ class Interest
 				end
 			end
 		end
-		# p recommendation_lists[1]
-		# p recommendation_lists[2]
 		index_combos.each do |combo|
 			p combo
 			intersection = recommendation_lists[combo[0]]
