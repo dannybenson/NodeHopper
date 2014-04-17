@@ -12,6 +12,7 @@ class HomeController < ApplicationController
 
   def show
     interests = params[:list].map{|name| Interest.find(name)}
+    # interests.reject!{|interest| interest.nil?}
     render json: Interest.combined_donut(interests)
  	end
 

@@ -1,9 +1,9 @@
 $(document).ready(function(){
 var canvas = d3.select("#logo").append("svg")
-  .attr("hieght", 180)
+  .attr("hieght", 200)
   .attr("width", 300)
   .append("g")
-    .attr("transform", "translate(40,50)");
+    .attr("transform", "translate(20,30)");
 
   canvas.append("text")
     .text("N")
