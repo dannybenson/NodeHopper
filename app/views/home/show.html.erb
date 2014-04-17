@@ -107,8 +107,10 @@
   <div class="row">
     <div class="col-md-4 col-md-offset-4">
       <div id="d3_1">
+
         <%= form_tag("/search", method: "get", class: "form-inline") do %>
           <ul id="multi_search">
+            <li id="d3_1_error" style="display: none">Hmm, Please Try Again</li>
           </ul>
           <%= text_field_tag :d3_1_search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
           <%= submit_tag "Search", class: "btn btn-default" %>
@@ -169,6 +171,7 @@
   <div class="row">
     <div class="col-md-12 col-sm-12">
       <div id="d3_2">
+        <div id="d3_2_error" style="display: none">Hmm, Please Try Again</div>
             <%= form_tag("/search", method: "get", class: "form-inline") do %>
               <%= text_field_tag :search, "", placeholder: "Your Interest", maxlength: 15, class: "form-control typeahead"  %>
               <%= submit_tag "Search", class: "btn btn-default" %>

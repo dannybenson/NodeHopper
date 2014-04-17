@@ -9,16 +9,16 @@ $(document).ready(function() {
       bindEvents : function() {
         $("#d3_1 form").submit(this.create.bind(this));
         $("#multi_search").on("click", this.delete.bind(this))
-        $("#multi_search li").on("keyup", this.update.bind(this));
+        // $("#multi_search li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();
-        if ($('#d3_1_search').val() != "") {
-          var todo = new Todo($('#d3_1_search').val(), this.index)
-          this.index++
-          $('#d3_1_search').val("")
-          TodoList.add(todo)
-        }
+          if ($('#d3_1_search').val() != "") {
+            var todo = new Todo($('#d3_1_search').val(), this.index)
+            this.index++
+            $('#d3_1_search').val("")
+            TodoList.add(todo)
+          }
       },
       update: function(key){
         event.preventDefault();
@@ -90,14 +90,18 @@ $(document).ready(function() {
     var controller = new TodoController();
     controller.bindEvents();
 
+
   //d3 portion
-  var w = 550;
+  var w = 500;
   var h = 500;
   var r = Math.min(w,h)/2;
   var color = d3.scale.category20c();
   var root = {};
   var colorStore = [];
 
+  var displayErrorMessage = function() {
+    console.log("error")
+  }
 
   var updateSearch = function(todos) {
     d3.select("#charts svg").remove();
@@ -107,11 +111,10 @@ $(document).ready(function() {
     colorStore = [];
     todos = _.map(todos, function(todo){ return todo["text"]})
     if (todos.length > 0) {
-      $.post("/search", {"list" : todos}, function(result) {
+      $.get("/search", {"list" : todos}, function(result) {
         root = result;
-        console.log(result);
-      }, "json").done(dataDriven);
-      $.post("/top", {"list" : todos}, function(result) {
+      }, "json").done(dataDriven).fail(displayErrorMessage);
+      $.get("/top", {"list" : todos}, function(result) {
         $(".rec").fadeIn(500);
         _.map(result, function(res) { $("#reclist").append("<li>" + res[1] + ", " +res[0] + "</li>") })
       })

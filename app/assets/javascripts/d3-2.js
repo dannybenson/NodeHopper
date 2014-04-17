@@ -6,13 +6,21 @@ $(document).ready(function() {
     i = 0,
     json;
 
+
+  var showErrorMessage = function() {
+    console.log("Error")
+    $("#d3_2_error").show();
+    $("#d3_2 #search").val("")
+  }
+
   $("#d3_2").on("submit", function(event) {
     event.preventDefault();
+    $("#d3_2_error").hide();
     d3.select("#d3-2-chart svg").remove();
     var input = { name: $("#d3_2 #search").val()};
     $.get("/nodes", input, function(result) {
       json = result;
-    }, "json").done(d3_2);
+    }, "json").done(d3_2).fail(showErrorMessage);
   })
   var d3_2 = function() {
     var force = d3.layout.force()
