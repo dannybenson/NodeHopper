@@ -5,7 +5,7 @@
   border-radius: 5px;
 }
 
-svg {
+#charts svg {
   position: relative;
   top: 0px;
   left: 0px;
@@ -15,7 +15,12 @@ svg {
   opacity: 0;
 }
 
+#logo {
+  height: 170px;
+  width: 300px;
+  margin: 20px auto;
+}
+
 .venn {
   background-color: #ffffff;
 }
-
