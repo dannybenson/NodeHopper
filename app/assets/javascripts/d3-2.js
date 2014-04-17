@@ -8,7 +8,6 @@ $(document).ready(function() {
 
 
   var showErrorMessage = function() {
-    console.log("Error")
     $("#d3_2_error").show();
     $("#d3_2 #search").val("")
   }

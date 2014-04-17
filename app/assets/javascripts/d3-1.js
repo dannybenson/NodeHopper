@@ -1,24 +1,23 @@
 $(document).ready(function() {
 
   //dynamic list
+  var index = 0
   function TodoController() {
       this.index = 0
     }
 
     TodoController.prototype = {
       bindEvents : function() {
-        $("#d3_1 form").submit(this.create.bind(this));
+        // $("#d3_1 form").submit(this.create.bind(this));
         $("#multi_search").on("click", this.delete.bind(this))
         // $("#multi_search li").on("keyup", this.update.bind(this));
       },
       create: function(key) {
         event.preventDefault();
-          if ($('#d3_1_search').val() != "") {
-            var todo = new Todo($('#d3_1_search').val(), this.index)
-            this.index++
-            $('#d3_1_search').val("")
-            TodoList.add(todo)
-          }
+          var todo = new Todo($('#d3_1_search').val(), index)
+          index++
+          $('#d3_1_search').val("")
+          TodoList.add(todo)
       },
       update: function(key){
         event.preventDefault();
@@ -62,14 +61,10 @@ $(document).ready(function() {
     }
 
     var TodoList = {
-      limit : 3,
       todos : [],
       add   : function(todo) {
-        if (this.todos.length < 3) {
         this.todos.push(todo)
         TodoView.update(this.todos)
-
-      }
       },
       update : function(index,text) {
         this.todos = _.map(this.todos, function(todo){ if (todo.index == index) {
@@ -89,6 +84,15 @@ $(document).ready(function() {
 
     var controller = new TodoController();
     controller.bindEvents();
+    var showErrorMessage = function() {
+      $("#multi_search").append('<li id="d3_1_error">Hmm, Please Try Again</li>')
+    }
+    var validate = function() {
+      event.preventDefault();
+      $.get("/search", {"list" : [$('#d3_1_search').val()]}).done(controller.create).fail(showErrorMessage)
+    }
+
+    $("#d3_1 form").submit(validate);
 
 
   //d3 portion
@@ -98,10 +102,6 @@ $(document).ready(function() {
   var color = d3.scale.category20c();
   var root = {};
   var colorStore = [];
-
-  var displayErrorMessage = function() {
-    console.log("error")
-  }
 
   var updateSearch = function(todos) {
     d3.select("#charts svg").remove();
@@ -113,7 +113,7 @@ $(document).ready(function() {
     if (todos.length > 0) {
       $.get("/search", {"list" : todos}, function(result) {
         root = result;
-      }, "json").done(dataDriven).fail(displayErrorMessage);
+      }, "json").done(dataDriven);
       $.get("/top", {"list" : todos}, function(result) {
         $(".rec").fadeIn(500);
         _.map(result, function(res) { $("#reclist").append("<li>" + res[1] + ", " +res[0] + "</li>") })
