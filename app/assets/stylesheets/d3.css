@@ -11,10 +11,6 @@
   left: 0px;
 }
 
-#charts g {
-  opacity: 0;
-}
-
 #logo {
   height: 170px;
   width: 300px;
@@ -23,4 +19,8 @@
 
 .venn {
   background-color: #ffffff;
+}
+
+#d3-3-chart svg g text {
+  opacity: 0;
 }
