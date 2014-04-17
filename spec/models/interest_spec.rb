@@ -73,6 +73,32 @@ describe Interest do
       expect(b).to eq(nil)
     end
   end
+
+  describe "self.get_interest_names" do
+    it "returns correct JSON interest data" do
+      interest_json = Interest.get_interest_names
+      expect(interest_json.first).to eq({"name"=>"When Harry Met Sally"})
+      expect(interest_json[500]).to eq({"name"=>"Justice"})
+      expect(interest_json.last).to eq({"name"=>"Dungeon World"})      
+    end
+  end
+
+  describe "self.find_or_create_by" do
+    it "finds an existing interest in the database" do
+      @neo = ClientHelper.get_client
+      test_node = Interest.find_or_create_by("thing", "whatamajig")
+      expect(test_node['data']).to eq({"name"=>"whatamajig"})
+      @neo.delete_node(test_node)
+    end
+  end
+
+  describe "self.node_matrix" do
+    it "should correct name and size data" do
+      data = Interest.node_matrix("Kanye West")['children']
+      expect(data.first).to eq({"name"=>"Call of Duty", "size"=>7})
+      expect(data[4]).to eq({"name"=>"The Lord of the Rings", "size"=>6})
+    end
+  end
 end
 
 
