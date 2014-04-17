@@ -513,7 +513,7 @@
 
         centerVennDiagram( diagram, width, height, padding );
 
-        text.transition().delay(20).duration(3500)
+        text.transition().delay(20).duration(1500)
             .style("opacity", 1)
             .remove;
 
@@ -521,7 +521,7 @@
 
             function transition(element, end) {
                 element.transition()
-                    .duration(3000)
+                    .duration(1000)
                     .attr("r", end)
             }
 
