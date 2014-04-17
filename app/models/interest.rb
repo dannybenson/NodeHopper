@@ -83,7 +83,29 @@ class Interest
     results
   end
 
+	def recommendations
+		result = @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
+		if result[0]
+			return result
+		else
+			return nil
+		end
+	end
 
+	def weighted_recommendations
+		recommendations = self.recommendations
+    if recommendations
+	    results = []
+	    unique = recommendations.uniq
+	    unique.each do |title|
+	      title << recommendations.count{|interest| interest[1] == title[1]}
+	      results << title
+	    end
+	    return results.sort{ |a,b| b[2] <=> a[2]}
+	  else
+	  	nil
+	  end
+	end
 
 	def self.combined_weighted_recommendations(interest_array)
 		recommendations = self.combined_recommendations(interest_array)
@@ -101,7 +123,18 @@ class Interest
 	  end
   end
 
-  def self.combined_percentage_recommendations(interest_array)
+	def self.combined_recommendations(interest_array)
+		interests = interest_array.map{|interest| interest.name}
+		result = interest_array.map{|interest| interest.recommendations}
+		result.flatten!(1).reject!{|recommendation| interests.include?(recommendation[1])}
+		if result[0]
+			return result
+		else
+			return nil
+		end
+	end
+
+	def self.combined_percentage_recommendations(interest_array)
   	recommendations = self.combined_weighted_recommendations(interest_array)
   	if recommendations
 	    categories = recommendations.map{|interest| interest[0]}.uniq
@@ -123,11 +156,32 @@ class Interest
 
 
 
+	#untested
 
 
 
+  def self.get_interest_names(label = "Interest")
+    # @@neo.get_nodes_labeled(label).map{ |labeled|  @@neo.get_node_properties(labeled, 'name')}
+    @@neo.execute_query("MATCH (n:Interest) RETURN n.name")["data"].inject(Array.new){ |array, name| array << {"name" => name.first }}
+  end
 
+  def self.find_or_create_by(label, name)
+    if @@neo.find_nodes_labeled(label, {:name => name}).empty?
+      node = @@neo.create_node("name" => name)
+      @@neo.add_label(node, ["Interest", label])
+      node
+    else
+      @@neo.find_nodes_labeled(label, {:name => name}).first
+    end
+  end
 
+  def self.node_matrix(interest, label="Interest")
+    paths = @@neo.execute_query("MATCH (startnode {name:\"" + interest + "\"})--(p)--(ri1) WHERE NOT ri1.name = startnode.name RETURN ri1.name")['data']
+    paths = paths.uniq.map {|path| path << paths.count(path) }.sort { |x,y| y.last <=> x.last}.take(rand(8..13))
+    results = {"name" => interest, "children" => []}
+    paths.each {|p| results['children'] << {"name" => p[0], "size" => p[1]} }
+    results
+  end
 
   def self.combined_donut(interest_array)
   	input = self.combined_percentage_recommendations(interest_array)
@@ -148,63 +202,6 @@ class Interest
 	  end
   end
 
-
-
-	def recommendations
-		result = @@neo.execute_query("MATCH (interest {name:'"+ self.name+"'})--(person)--(recommendation) WHERE NOT interest=recommendation RETURN labels(recommendation)[1],recommendation.name")['data']
-		if result[0]
-			return result
-		else
-			return nil
-		end
-	end
-
-
-	def weighted_recommendations
-		recommendations = self.recommendations
-    if recommendations
-	    results = []
-	    unique = recommendations.uniq
-	    unique.each do |title|
-	      title << recommendations.count{|interest| interest[1] == title[1]}
-	      results << title
-	    end
-	    return results.sort{ |a,b| b[2] <=> a[2]}
-	  else
-	  	nil
-	  end
-	end
-
-
-
-	def self.combined_recommendations(interest_array)
-		interests = interest_array.map{|interest| interest.name}
-		result = interest_array.map{|interest| interest.recommendations}
-		result.flatten!(1).reject!{|recommendation| interests.include?(recommendation[1])}
-		if result[0]
-			return result
-		else
-			return nil
-		end
-	end
-
-
-
-
-
-
-
-
-
-
-
-# var root = { "set": [{label : 'SE', size : 28}, {label : 'Treat', size: 35}, {label : 'snow', size: 20}],
-#     "overlap": [{sets : [0,1], size:2},
-#           {sets :  [0,2], size:3},
-#           {sets : [1,2], size: 10},
-#           {sets : [0,1,2], size: 10}
-#                        ]};
-
 	def self.venn(interest_array)
 		interest_names=interest_array.map{|interest| interest.name}
 		# p interest_names
@@ -219,7 +216,7 @@ class Interest
 					name == recommendation[1]
 				end
 			end
-			
+
 			output['set'] << {'label'=>interest['name'] ,'size'=> interest['recommendations'].length}
 		end
 		#part 2
